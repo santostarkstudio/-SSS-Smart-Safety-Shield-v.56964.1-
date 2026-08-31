@@ -148,7 +148,7 @@ This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**
 
 ```
 SSS: Smart Safety Shield (v.56964.1)
-Copyright (C) 2026  Santos Stark / Santo Stark Studio (SSS)
+Copyright (C) 2026  Santosha D / Santo Stark Studio (SSS)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -165,7 +165,7 @@ GNU General Public License for more details.
 
 ## 👨‍💻 Author & Founder
 
-- **Inventor & Founder**: Santos Stark
+- **Inventor & Founder**: **Santosha D** (Santos Stark)
 - **Organization / Studio**: [Santo Stark Studio](https://github.com/santostarkstudio)
 - **Official GitHub Repository**: [SSS-Smart-Safety-Shield-v.56964.1](https://github.com/santostarkstudio/-SSS-Smart-Safety-Shield-v.56964.1-)
 - **Version**: v.56964.1

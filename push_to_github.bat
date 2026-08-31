@@ -41,7 +41,7 @@ echo.
 "%GIT_EXE%" merge --abort 2>nul
 
 echo [1/4] Configuring Git Identity...
-"%GIT_EXE%" config user.name "Santos Stark"
+"%GIT_EXE%" config user.name "Santosha D"
 "%GIT_EXE%" config user.email "santostarkstudio@gmail.com"
 
 echo.

@@ -3,7 +3,7 @@
 
 **Product Name:** SSS: Smart Safety Shield  
 **Version:** v.56964.1  
-**Author / Inventor:** Santos Stark  
+**Author / Inventor:** Santosha D (Santos Stark)  
 **Studio / Organization:** Santo Stark Studio (SSS)  
 **License:** GNU General Public License v3.0 (GPL-3.0)  
 **Target Platforms:** Web/PWA, Android (AOSP 5.0+ / Modern Android 14+), iOS (14.0+)  
