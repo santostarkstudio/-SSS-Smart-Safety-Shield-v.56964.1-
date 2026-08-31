@@ -1,0 +1,980 @@
+/* ==========================================================================
+   SSS v.56964 — SMART SAFETY SHIELD STYLES
+   Santo Stark Studio • Cybernetic Medical & Emergency Design
+   ========================================================================== */
+
+:root {
+  --bg-dark: #07090e;
+  --panel-bg: rgba(16, 20, 29, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --primary-red: #ff2a4b;
+  --glow-red: rgba(255, 42, 75, 0.5);
+  --accent-cyan: #00e5ff;
+  --accent-green: #00e676;
+  --accent-gold: #ffb300;
+  --text-main: #f0f4f8;
+  --text-muted: #8a99ad;
+  --font-display: 'Orbitron', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 50% 10%, rgba(255, 42, 75, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(0, 229, 255, 0.06) 0%, transparent 50%);
+}
+
+/* Device Shell Frame */
+.device-wrapper {
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  max-height: 880px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+}
+
+.device-frame {
+  width: 100%;
+  height: 100%;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 40px;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(255, 42, 75, 0.15);
+  backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px 6px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.dynamic-island {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+}
+
+.island-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-green);
+  animation: pulse-dot 2s infinite;
+}
+
+.mini-lang-picker {
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  color: var(--accent-cyan);
+  border-radius: 12px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  max-width: 110px;
+}
+
+.mini-lang-picker option {
+  background: #0b111b;
+  color: #fff;
+}
+
+/* App Header */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-logo {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #ff2a4b, #8b0018);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 15px;
+  color: #fff;
+  box-shadow: 0 0 16px var(--glow-red);
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+.brand-sub {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  letter-spacing: 1px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.offers-header-btn {
+  background: linear-gradient(135deg, #ffb300, #ff8f00);
+  color: #000;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 14px;
+  font-size: 9.5px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 179, 0, 0.4);
+  transition: all 0.2s;
+}
+
+.offers-header-btn:hover {
+  transform: scale(1.05);
+}
+
+.install-header-btn {
+  background: linear-gradient(135deg, #00e5ff, #0077ff);
+  color: #000;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 14px;
+  font-size: 9.5px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+  transition: all 0.2s;
+}
+
+.install-header-btn:hover {
+  transform: scale(1.05);
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--accent-gold);
+  padding: 6px 8px;
+  border-radius: 14px;
+  font-size: 9.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 30-Day Free Trial Banner Strip */
+.trial-active-strip {
+  background: linear-gradient(90deg, rgba(0, 230, 118, 0.15), rgba(0, 229, 255, 0.15));
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.trial-days-left {
+  background: var(--accent-green);
+  color: #000;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 9px;
+}
+
+/* Main Scrollable Content Area */
+.screen-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 18px 80px 18px;
+}
+
+.screen-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tab Panes */
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Vitals Quickbar */
+.vitals-quickbar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.vital-pill {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vital-icon { font-size: 18px; }
+.vital-val { font-size: 13px; font-weight: 800; font-family: var(--font-mono); }
+.vital-val small { font-size: 10px; color: var(--text-muted); }
+.vital-lbl { font-size: 9px; color: var(--text-muted); font-weight: 600; }
+
+/* BIG RED SOS BUTTON HERO */
+.sos-hero-container {
+  position: relative;
+  width: 210px;
+  height: 210px;
+  margin: 12px auto 16px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--primary-red);
+  opacity: 0;
+  animation: pulse-out 3s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.ring-2 { animation-delay: 1s; }
+.ring-3 { animation-delay: 2s; }
+
+.big-red-button {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff4b68, #b7001f 65%, #6a0011);
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 0 35px var(--glow-red),
+    inset 0 4px 10px rgba(255, 255, 255, 0.4),
+    inset 0 -8px 16px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  z-index: 5;
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s;
+}
+
+.big-red-button:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 50px rgba(255, 42, 75, 0.8);
+}
+
+.big-red-button:active {
+  transform: scale(0.94);
+  box-shadow: 0 0 20px rgba(255, 42, 75, 0.9);
+}
+
+.button-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.btn-shield-icon { font-size: 24px; margin-bottom: 2px; }
+.btn-sos-text { font-family: var(--font-display); font-size: 20px; font-weight: 900; letter-spacing: 1px; }
+.btn-sub-text { font-size: 8.5px; font-weight: 700; letter-spacing: 0.8px; opacity: 0.9; margin-top: 4px; }
+
+.sos-guidance-text {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.warn-dot { width: 6px; height: 6px; background: var(--primary-red); border-radius: 50%; }
+
+/* Quick Trigger Chips */
+.trigger-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quick-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 4px;
+  color: var(--text-main);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-chip:hover {
+  background: rgba(255, 42, 75, 0.15);
+  border-color: var(--primary-red);
+}
+
+/* Medical Preview Card */
+.medical-preview-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  letter-spacing: 0.5px;
+}
+
+.card-tag {
+  font-size: 9px;
+  font-weight: 700;
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--accent-cyan);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.med-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.med-grid strong { color: var(--text-main); }
+
+/* TAB 2: VITALS & ECG */
+.pane-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.pane-title h2 { font-size: 15px; font-weight: 800; }
+.live-pill { font-size: 10px; font-weight: 700; color: var(--primary-red); background: rgba(255, 42, 75, 0.12); padding: 3px 8px; border-radius: 10px; }
+.live-pill.green { color: var(--accent-green); background: rgba(0, 230, 118, 0.12); }
+.live-pill.cyan { color: var(--accent-cyan); background: rgba(0, 229, 255, 0.12); }
+
+.ecg-container {
+  background: #02060b;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 16px;
+  padding: 8px;
+  position: relative;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+}
+
+#ecgCanvas { width: 100%; height: 110px; display: block; }
+
+.ecg-overlay-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  margin-top: 4px;
+}
+
+.vitals-matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.metric-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.metric-value { font-size: 19px; font-weight: 800; font-family: var(--font-mono); margin: 6px 0; }
+.metric-value small { font-size: 11px; color: var(--text-muted); }
+.metric-bar { height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.bar-fill { height: 100%; background: var(--primary-red); }
+.bar-fill.cyan { background: var(--accent-cyan); }
+.bar-fill.green { background: var(--accent-green); }
+.metric-note { font-size: 9px; color: var(--text-muted); }
+
+.med-alert-box {
+  background: rgba(255, 179, 0, 0.08);
+  border: 1px solid rgba(255, 179, 0, 0.2);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.med-alert-icon { font-size: 24px; }
+.med-title { font-size: 12px; font-weight: 700; color: var(--accent-gold); }
+.med-time { font-size: 10px; color: var(--text-muted); }
+
+/* TAB 3: RADAR & STREET FLEET */
+.section-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.btn-cpr-tutorial-hero {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 179, 0, 0.15), rgba(255, 42, 75, 0.25));
+  border: 1px solid rgba(255, 179, 0, 0.4);
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 14px;
+  box-shadow: 0 0 16px rgba(255, 179, 0, 0.15);
+  transition: all 0.2s;
+}
+
+.btn-cpr-tutorial-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(255, 179, 0, 0.3);
+  border-color: var(--accent-gold);
+}
+
+.cpr-tut-icon { font-size: 24px; }
+.cpr-tut-text { flex: 1; text-align: left; }
+.cpr-tut-text strong { display: block; font-size: 12px; color: var(--accent-gold); }
+.cpr-tut-text span { font-size: 10px; color: #ffd8a8; }
+.cpr-tut-arrow { font-size: 14px; color: var(--accent-gold); }
+
+.radar-box {
+  background: #02070d;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  border-radius: 20px;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: 0 0 20px rgba(0, 230, 118, 0.1);
+}
+
+#radarCanvas { width: 100%; height: 100%; display: block; }
+
+.radar-center-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--primary-red);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px var(--primary-red);
+  pointer-events: none;
+}
+
+.riders-list { display: flex; flex-direction: column; gap: 8px; }
+
+.rider-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rider-info strong { font-size: 12px; display: block; }
+.rider-info span { font-size: 10px; color: var(--text-muted); }
+.rider-eta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-green);
+  background: rgba(0, 230, 118, 0.1);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* ==========================================================================
+   🎁 BANK OFFERS & PROMO MODAL
+   ========================================================================== */
+.offers-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(16px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.offers-modal.hidden { display: none !important; }
+
+.offers-card {
+  background: #0a0f19;
+  border: 2px solid var(--accent-cyan);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 390px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.35);
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.2s ease;
+}
+
+.offers-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.offers-modal-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--accent-cyan);
+  letter-spacing: 0.5px;
+}
+
+.offers-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.offers-trial-hero {
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.2), rgba(0, 229, 255, 0.2));
+  border: 1px solid rgba(0, 230, 118, 0.4);
+  border-radius: 18px;
+  padding: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.trial-hero-badge {
+  background: var(--accent-green);
+  color: #000;
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.offers-trial-hero h3 { font-size: 14px; font-weight: 800; margin-bottom: 4px; color: #fff; }
+.offers-trial-hero p { font-size: 11px; color: #ddd; }
+
+.promo-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.promo-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  outline: none;
+}
+
+.promo-apply-btn {
+  background: var(--accent-cyan);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 11px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.promo-msg {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.promo-msg.success { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+.promo-msg.error { background: rgba(255, 42, 75, 0.15); color: var(--primary-red); border: 1px solid var(--primary-red); }
+
+.bank-coupons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coupon-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bank-badge {
+  font-size: 9px;
+  font-weight: 900;
+  padding: 4px 6px;
+  border-radius: 6px;
+  text-align: center;
+  min-width: 65px;
+}
+
+.bank-badge.hdfc { background: #004c8f; color: #fff; }
+.bank-badge.icici { background: #b02a30; color: #fff; }
+.bank-badge.cred { background: #000; color: #fff; border: 1px solid #555; }
+.bank-badge.star { background: #ffb300; color: #000; }
+
+.coupon-details { flex: 1; font-size: 11px; }
+.coupon-details strong { display: block; color: #fff; font-size: 11.5px; }
+.coupon-details span { color: var(--text-muted); font-size: 9.5px; }
+.coupon-details code { color: var(--accent-cyan); font-weight: bold; }
+
+.btn-claim-coupon {
+  background: rgba(0, 229, 255, 0.15);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-claim-coupon:hover {
+  background: var(--accent-cyan);
+  color: #000;
+}
+
+/* ==========================================================================
+   5-10 SECOND CPR ANIMATED TUTORIAL MODAL
+   ========================================================================== */
+.cpr-tutorial-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(16px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.cpr-tutorial-modal.hidden { display: none !important; }
+
+.cpr-tutorial-card {
+  background: #0a0e17;
+  border: 2px solid var(--accent-gold);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 380px;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(255, 179, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.2s ease;
+}
+
+.tut-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.tut-tag { font-family: var(--font-display); font-size: 11px; font-weight: 900; color: var(--accent-gold); letter-spacing: 0.5px; }
+.tut-close-btn { background: rgba(255, 255, 255, 0.1); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 12px; cursor: pointer; }
+
+.cpr-anim-stage {
+  background: #04070d;
+  border-radius: 16px;
+  padding: 8px;
+  position: relative;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.anim-arrow { animation: arrowPush 0.545s infinite; }
+@keyframes arrowPush { 0% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(12px); opacity: 1; } 100% { transform: translateY(0); opacity: 0.4; } }
+
+.anim-hands { animation: handCompress 0.545s infinite; }
+@keyframes handCompress { 0% { transform: translateY(0); } 50% { transform: translateY(8px); } 100% { transform: translateY(0); } }
+
+.pulse-target { animation: targetPulse 0.545s infinite; }
+@keyframes targetPulse { 0% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.3); opacity: 0.8; } 100% { transform: scale(1); opacity: 0.3; } }
+
+.tut-progress-bar { height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; margin-top: 6px; }
+.tut-bar-fill { height: 100%; background: linear-gradient(90deg, #ffb300, #ff2a4b); width: 0%; transition: width 0.1s linear; }
+
+.tut-steps-carousel {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.tut-steps-carousel strong { color: var(--accent-gold); }
+
+.tut-audio-speaker {
+  font-size: 11px;
+  color: var(--accent-cyan);
+  background: rgba(0, 229, 255, 0.08);
+  padding: 8px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+}
+
+/* TAB 4: VEHICLE & HARDWARE */
+.vehicle-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--panel-border); border-radius: 18px; padding: 14px; margin-bottom: 12px; }
+.card-badge { font-size: 9px; font-weight: 800; color: var(--accent-cyan); letter-spacing: 1px; margin-bottom: 4px; }
+.vehicle-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.vehicle-card p { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+.status-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+.speedometer-box { background: #02070d; padding: 12px; border-radius: 12px; text-align: center; font-family: var(--font-mono); }
+.speed-val { font-size: 28px; font-weight: 900; color: var(--accent-cyan); }
+.speed-unit { font-size: 11px; color: var(--text-muted); margin-left: 6px; }
+
+/* TAB 5: FAILSAFES */
+.failsafe-list { display: flex; flex-direction: column; gap: 10px; }
+.fs-item { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--panel-border); border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+.fs-item strong { font-size: 12px; display: block; margin-bottom: 2px; }
+.fs-item p { font-size: 10px; color: var(--text-muted); }
+.badge-active { font-size: 10px; font-weight: 800; color: var(--accent-green); background: rgba(0, 230, 118, 0.15); padding: 3px 8px; border-radius: 6px; }
+
+/* Buttons */
+.btn-primary { background: linear-gradient(135deg, #00e5ff, #0077ff); color: #000; font-weight: 800; font-size: 13px; padding: 12px; border-radius: 14px; border: none; cursor: pointer; }
+.btn-outline { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 10px; border-radius: 12px; font-size: 11px; font-weight: 700; cursor: pointer; }
+.btn-sm { background: var(--accent-gold); color: #000; border: none; padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer; }
+.btn-sm-danger { background: var(--primary-red); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+.w-full { width: 100%; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.text-green { color: var(--accent-green); }
+.text-blue { color: var(--accent-cyan); }
+
+/* Bottom Nav Bar */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 68px;
+  background: rgba(10, 14, 22, 0.95);
+  border-top: 1px solid var(--panel-border);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 6px 8px 12px 8px;
+  backdrop-filter: blur(20px);
+}
+
+.nav-item {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-icon { font-size: 18px; }
+.nav-lbl { font-size: 9px; font-weight: 700; }
+.nav-item.active { color: var(--primary-red); }
+.nav-item.active .nav-icon { transform: scale(1.15); }
+
+/* ==========================================================================
+   FULL SCREEN BYSTANDER EMERGENCY OVERLAY
+   ========================================================================== */
+.bystander-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  overflow-y: auto;
+  animation: strobeAlert 0.545s infinite alternate;
+}
+
+.bystander-overlay.hidden { display: none !important; }
+
+@keyframes strobeAlert {
+  0% { background: #000000; }
+  50% { background: #3d0008; }
+  100% { background: #7a0011; }
+}
+
+.bystander-alert-bar { text-align: center; margin-bottom: 20px; }
+.alert-pulse-badge { background: var(--primary-red); color: #fff; display: inline-block; font-family: var(--font-display); font-weight: 900; font-size: 14px; padding: 6px 16px; border-radius: 20px; letter-spacing: 1px; margin-bottom: 10px; box-shadow: 0 0 25px var(--primary-red); }
+.alert-headline { font-family: var(--font-display); font-size: 26px; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 6px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8); }
+.alert-subline { font-size: 14px; color: #ffd1d8; font-weight: 600; }
+
+.cpr-metronome-card { background: rgba(15, 0, 4, 0.9); border: 3px solid #ff2a4b; border-radius: 24px; padding: 20px; margin-bottom: 20px; text-align: center; box-shadow: 0 0 35px rgba(255, 42, 75, 0.6); }
+.cpr-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 13px; color: #ff99aa; margin-bottom: 16px; }
+.cpr-bpm-tag { background: #ff2a4b; color: #fff; padding: 4px 10px; border-radius: 12px; font-family: var(--font-mono); font-weight: 900; }
+
+.cpr-flashing-target {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: #ff2a4b;
+  margin: 0 auto 16px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border: 6px solid #fff;
+  box-shadow: 0 0 40px #ff2a4b;
+  animation: cprHeartbeat 0.545s infinite;
+}
+
+@keyframes cprHeartbeat { 0% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } }
+
+.cpr-icon { font-size: 36px; }
+.cpr-action-text { font-family: var(--font-display); font-size: 18px; font-weight: 900; }
+.cpr-sub-text { font-size: 10px; font-weight: 700; margin-top: 2px; }
+.cpr-audio-status { font-size: 14px; font-weight: 700; color: #fff; background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 12px; }
+
+.bystander-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.btn-emergency-call { background: #00e676; color: #000; border: none; border-radius: 16px; padding: 16px 8px; font-family: var(--font-display); font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 0 25px rgba(0, 230, 118, 0.6); }
+.btn-defib-radar { background: #ffb300; color: #000; border: none; border-radius: 16px; padding: 16px 8px; font-family: var(--font-display); font-weight: 900; font-size: 13px; cursor: pointer; box-shadow: 0 0 25px rgba(255, 179, 0, 0.6); }
+
+.bystander-patient-card { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 18px; padding: 16px; margin-bottom: 20px; font-size: 13px; }
+.patient-title { font-weight: 800; color: var(--accent-cyan); margin-bottom: 8px; font-size: 12px; letter-spacing: 1px; }
+.patient-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; color: #ddd; }
+.patient-grid strong { color: #fff; }
+
+.bystander-footer { text-align: center; margin-top: auto; padding-bottom: 12px; }
+.btn-cancel-sos { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 12px; font-weight: 800; cursor: pointer; }
+
+@keyframes pulse-out { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.4); opacity: 0; } }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }

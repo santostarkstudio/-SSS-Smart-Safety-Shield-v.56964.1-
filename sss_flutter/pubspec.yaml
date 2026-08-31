@@ -1,0 +1,51 @@
+name: sss_smart_safety_shield
+description: "SSS v.56964 — Smart Safety Shield by Santo Stark Studio. 1-Tap Cardiac and Emergency Life Guardian."
+publish_to: 'none'
+version: 1.0.0+56964
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Audio & Hardware Volume Control (STREAM_ALARM override)
+  audioplayers: ^6.0.0
+  volume_controller: ^2.0.7
+  
+  # Multilingual Spoken AI CPR Coach (Text-To-Speech)
+  flutter_tts: ^4.0.2
+  
+  # Zero-Latency GPS & Location Telemetry
+  geolocator: ^11.0.0
+  
+  # Fall & Impact Accelerometer / Gyroscope
+  sensors_plus: ^5.0.1
+  
+  # BLE 5.0 Handlebar & Steering Wheel Clicker Connection
+  flutter_blue_plus: ^1.31.14
+  
+  # Direct Cellular GSM SMS Fallback (0 Internet)
+  telephony: ^0.2.0
+  
+  # Phone Dialer & Maps Launcher
+  url_launcher: ^6.2.5
+  
+  # Local Preferences & Offline Cache
+  shared_preferences: ^2.2.2
+  
+  # Modern Cybernetic UI Fonts & Icons
+  google_fonts: ^6.1.0
+  flutter_svg: ^2.0.10+1
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/audio/

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="192" height="192">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff2a4b" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#07090e" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff4b68"/>
+      <stop offset="50%" stop-color="#b7001f"/>
+      <stop offset="100%" stop-color="#4a000c"/>
+    </linearGradient>
+    <linearGradient id="cyanBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#0077ff"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="512" height="512" rx="120" fill="#07090e"/>
+  <circle cx="256" cy="256" r="220" fill="url(#bgGlow)"/>
+  
+  <path d="M 256 60 L 410 120 C 410 280 256 420 256 450 C 256 420 102 280 102 120 Z" 
+        fill="url(#shieldGrad)" stroke="url(#cyanBorder)" stroke-width="8"/>
+        
+  <path d="M 256 190 C 256 160 210 130 170 160 C 120 200 170 270 256 330 C 342 270 392 200 342 160 C 302 130 256 160 256 190 Z" 
+        fill="#ffffff" opacity="0.95"/>
+        
+  <text x="256" y="270" font-family="'Orbitron', sans-serif" font-weight="900" font-size="52" fill="#b7001f" text-anchor="middle">SSS</text>
+</svg>

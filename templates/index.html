@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraFarming Auto-Editor // Autonomous AI Videographer</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body class="cyber-theme">
+    <!-- Background Ambient Glow -->
+    <div class="ambient-glow glow-cyan"></div>
+    <div class="ambient-glow glow-magenta"></div>
+
+    <div class="app-container">
+        <!-- TOP NAVIGATION & TELEMETRY BAR -->
+        <header class="app-header glass-card">
+            <div class="header-brand">
+                <div class="brand-badge">AI 2.0</div>
+                <div class="brand-title">
+                    <h1>AURAFARMING</h1>
+                    <span class="brand-subtitle">BY SANTOSTARK // AUTONOMOUS AI VIDEOGRAPHER</span>
+                </div>
+            </div>
+
+            <div class="header-telemetry">
+                <div class="telemetry-pill" id="pill-connection">
+                    <span class="status-dot green pulse"></span>
+                    <span class="pill-label">STREAM: LIVE</span>
+                </div>
+                <div class="telemetry-pill" id="pill-face">
+                    <span class="status-dot cyan pulse"></span>
+                    <span class="pill-label" id="face-lock-status">TARGET: SEARCHING</span>
+                </div>
+                <div class="telemetry-pill" id="pill-cycle">
+                    <span class="pill-label" id="cycle-status">CYCLE: SIGMA</span>
+                </div>
+            </div>
+
+            <div class="header-audio-controls">
+                <button id="btn-audio-toggle" class="btn-icon" title="Toggle Web Audio">
+                    <svg id="icon-sound-on" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.08"></path>
+                    </svg>
+                    <svg id="icon-sound-off" class="hidden" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                </button>
+                <input type="range" id="audio-volume" min="0" max="1" step="0.05" value="0.8" class="cyber-slider">
+            </div>
+        </header>
+
+        <!-- MAIN DASHBOARD GRID -->
+        <main class="dashboard-grid">
+            <!-- PRIMARY LIVE VIEWFINDER -->
+            <section class="viewport-card glass-card main-viewport">
+                <div class="card-header">
+                    <div class="card-tag"><span class="rec-dot"></span> LIVE OPTICAL FEED (16:9)</div>
+                    <div class="hud-coords" id="hud-coordinates">X: 0640 | Y: 0360</div>
+                </div>
+
+                <div class="viewport-container">
+                    <img id="main-stream" src="/video_feed" alt="AuraFarming Live Stream" class="video-stream">
+                    
+                    <!-- HUD OVERLAY WATERMARKS -->
+                    <div class="hud-overlay-layer">
+                        <div class="hud-corner top-left"></div>
+                        <div class="hud-corner top-right"></div>
+                        <div class="hud-corner bottom-left"></div>
+                        <div class="hud-corner bottom-right"></div>
+                        
+                        <div class="hud-status-badge" id="hud-live-badge">STANDBY</div>
+                        
+                        <!-- RECORDING PROGRESS BAR -->
+                        <div class="hud-countdown-container" id="hud-countdown-box">
+                            <div class="countdown-label" id="countdown-text">CLIP 1/5 (15.0s)</div>
+                            <div class="countdown-track">
+                                <div class="countdown-fill" id="countdown-progress-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="tip-pill"><kbd>SPACEBAR</kbd> Optical Punch Zoom</div>
+                    <div class="tip-pill"><kbd>1</kbd> Aura (1000180359) <kbd>2</kbd> Sigma <kbd>3</kbd> Second <kbd>4</kbd> Phonk</div>
+                </div>
+            </section>
+
+            <!-- RIGHT CONTROL & PIP SIDEBAR -->
+            <aside class="sidebar-column">
+                <!-- PICTURE-IN-PICTURE REEL MONITOR -->
+                <section class="viewport-card glass-card pip-viewport">
+                    <div class="card-header">
+                        <div class="card-tag">EDIT PIP MONITOR (9:16)</div>
+                        <span class="badge-mini" id="pip-status-badge">MONITOR</span>
+                    </div>
+                    <div class="pip-container">
+                        <img id="pip-stream" src="/pip_feed" alt="PiP Stream" class="pip-video">
+                        <div class="pip-scanline"></div>
+                    </div>
+                </section>
+
+                <!-- PHASE TELEMETRY & PROGRESS CARD -->
+                <section class="telemetry-card glass-card">
+                    <div class="telemetry-row">
+                        <div class="telemetry-item">
+                            <span class="item-title">CURRENT PHASE</span>
+                            <span class="item-value neon-cyan" id="current-phase-text">INITIALIZING</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="item-title">ACTIVE STYLE</span>
+                            <span class="item-value neon-gold" id="active-style-text">SIGMA</span>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC PROGRESS BAR -->
+                    <div class="progress-section">
+                        <div class="progress-meta">
+                            <span id="progress-status-desc">Standby Initialization</span>
+                            <span id="progress-pct-desc">0%</span>
+                        </div>
+                        <div class="cyber-progress-track">
+                            <div class="cyber-progress-fill" id="global-progress-fill"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INTERACTIVE CONTROL MATRIX -->
+                <section class="controls-card glass-card">
+                    <div class="control-group">
+                        <label class="control-label">DYNAMIC EDIT STYLE (4 CYCLES)</label>
+                        <div class="style-button-group" style="grid-template-columns: repeat(4, 1fr);">
+                            <button class="btn-style active" data-style="aura" id="btn-style-aura">
+                                <span class="btn-icon-dot cyan"></span> AURA
+                            </button>
+                            <button class="btn-style" data-style="sigma" id="btn-style-sigma">
+                                <span class="btn-icon-dot cyan"></span> SIGMA
+                            </button>
+                            <button class="btn-style" data-style="second" id="btn-style-second">
+                                <span class="btn-icon-dot gold"></span> SECOND
+                            </button>
+                            <button class="btn-style" data-style="third" id="btn-style-third">
+                                <span class="btn-icon-dot crimson"></span> PHONK
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group action-grid">
+                        <button id="btn-punch-zoom" class="btn-action btn-punch">
+                            ⚡ PUNCH ZOOM <span class="key-hint">[SPACE]</span>
+                        </button>
+                        <button id="btn-force-record" class="btn-action btn-record">
+                            ● FORCE RECORD
+                        </button>
+                    </div>
+
+                    <div class="control-group">
+                        <a id="btn-download-reel" href="/api/download_latest" download class="btn-download disabled">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            DOWNLOAD LATEST REEL (.MP4)
+                        </a>
+                    </div>
+                </section>
+            </aside>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <span>AuraFarming Neural Auto-Editor v2.4 // Created by <strong>santostark</strong></span>
+            <span>Loop Status: <strong class="neon-cyan" id="loop-cycle-counter">Cycle 0 Completed</strong></span>
+        </footer>
+    </div>
+
+    <!-- AUDIO ELEMENTS -->
+    <audio id="audio-waiting" preload="auto" src="/audio/waiting.wav"></audio>
+    <audio id="audio-confirm" preload="auto" src="/audio/confim.wav"></audio>
+    <audio id="audio-aura" preload="auto" src="/audio/cycle1.wav"></audio>
+    <audio id="audio-sigma" preload="auto" src="/audio/sigma.wav"></audio>
+    <audio id="audio-second" preload="auto" src="/audio/second.wav"></audio>
+    <audio id="audio-third" preload="auto" src="/audio/third.wav"></audio>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

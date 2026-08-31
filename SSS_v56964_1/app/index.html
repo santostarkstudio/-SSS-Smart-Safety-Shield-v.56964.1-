@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SSS v.56964.1 — Smart Safety Shield (Next Gen) | Santo Stark Studio</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#FF2A4B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SSS Shield">
+  <link rel="apple-touch-icon" href="icon-192.svg">
+  <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-background"></div>
+
+  <!-- Main Device Container -->
+  <div class="device-wrapper">
+    <div class="device-frame">
+      
+      <!-- Top Status Bar -->
+      <div class="status-bar">
+        <span class="status-time" id="statusTime">12:00</span>
+        <div class="dynamic-island">
+          <span class="island-dot"></span>
+          <span class="island-text" id="islandStatus">SSS v.56964.1: Active</span>
+        </div>
+        <div class="status-icons">
+          <select id="globalLangPicker" class="mini-lang-picker" title="Select Global Language">
+            <option value="en-US">🌐 English (US/UK)</option>
+            <option value="hi-IN">🇮🇳 Hindi (हिन्दी)</option>
+            <option value="te-IN">🇮🇳 Telugu (తెలుగు)</option>
+            <option value="ta-IN">🇮🇳 Tamil (தமிழ்)</option>
+            <option value="bn-IN">🇮🇳 Bengali (বাংলা)</option>
+            <option value="mr-IN">🇮🇳 Marathi (मराठी)</option>
+            <option value="gu-IN">🇮🇳 Gujarati (ગુજરાતી)</option>
+            <option value="kn-IN">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+            <option value="ml-IN">🇮🇳 Malayalam (മലയാളം)</option>
+            <option value="pa-IN">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
+            <option value="es-ES">🇪🇸 Spanish (Español)</option>
+            <option value="zh-CN">🇨🇳 Chinese (中文)</option>
+            <option value="ar-SA">🇸🇦 Arabic (العربية)</option>
+            <option value="fr-FR">🇫🇷 French (Français)</option>
+            <option value="pt-BR">🇧🇷 Portuguese (Português)</option>
+            <option value="ru-RU">🇷🇺 Russian (Русский)</option>
+            <option value="ja-JP">🇯🇵 Japanese (日本語)</option>
+            <option value="de-DE">🇩🇪 German (Deutsch)</option>
+            <option value="ko-KR">🇰🇷 Korean (한국어)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- App Header -->
+      <header class="app-header">
+        <div class="brand-badge">
+          <div class="studio-logo">SSS</div>
+          <div>
+            <div class="brand-title">SMART SAFETY SHIELD</div>
+            <div class="brand-sub">SANTO STARK STUDIO • v.56964.1</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="offers-header-btn" id="openOffersBtn" title="Bank Offers & Free Trial">
+            🎁 OFFERS
+          </button>
+          <button class="install-header-btn" id="installAppBtn" title="Install App to Phone">
+            📥 INSTALL
+          </button>
+          <button class="icon-btn" id="drillBtn" title="Safe Practice Drill">
+            🛡️ DRILL
+          </button>
+        </div>
+      </header>
+
+      <!-- Terrain Mode Selector Strip (New in v.56964.1) -->
+      <div class="terrain-mode-bar">
+        <button class="mode-btn active" data-mode="urban">🛵 Urban Fleet</button>
+        <button class="mode-btn" data-mode="rural">🌾 Gram Guardian</button>
+        <button class="mode-btn" data-mode="satellite">🛰️ Satellite NTN</button>
+      </div>
+
+      <!-- Main Scrollable Screen Content -->
+      <main class="screen-content">
+
+        <!-- TAB 1: GUARDIAN SOS (CORE) -->
+        <section id="tab-sos" class="tab-pane active">
+          
+          <!-- 30-Day Free Trial Banner Strip -->
+          <div class="trial-active-strip" id="trialActiveStrip">
+            <span>🎉 <strong>30-Day Pro Trial Active:</strong> Free Delivery Fleet Rescue & Fall Detection</span>
+            <span class="trial-days-left">29 Days Left</span>
+          </div>
+
+          <!-- Top Health Snapshot Bar -->
+          <div class="vitals-quickbar">
+            <div class="vital-pill">
+              <span class="vital-icon heart-pulse">🫀</span>
+              <div>
+                <div class="vital-val" id="quickHR">72 <small>BPM</small></div>
+                <div class="vital-lbl">Resting Normal</div>
+              </div>
+            </div>
+            <div class="vital-pill">
+              <span class="vital-icon">🫁</span>
+              <div>
+                <div class="vital-val" id="quickSpo2">98 <small>%</small></div>
+                <div class="vital-lbl">Optimal SpO2</div>
+              </div>
+            </div>
+            <div class="vital-pill">
+              <span class="vital-icon">📍</span>
+              <div>
+                <div class="vital-val">LIVE</div>
+                <div class="vital-lbl" id="quickLoc">GPS Active</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- THE BIG RED SOS BUTTON HERO -->
+          <div class="sos-hero-container">
+            <div class="pulse-ring ring-1"></div>
+            <div class="pulse-ring ring-2"></div>
+            <div class="pulse-ring ring-3"></div>
+
+            <button class="big-red-button" id="sosMainBtn">
+              <div class="button-inner">
+                <div class="btn-shield-icon">🛡️</div>
+                <div class="btn-sos-text">SSS SOS</div>
+                <div class="btn-sub-text">1-TAP EMERGENCY BEACON</div>
+              </div>
+            </button>
+          </div>
+
+          <div class="sos-guidance-text">
+            <span class="warn-dot"></span>
+            <span>Instantly blares <strong>Acoustic Siren</strong> + alerts <strong>Delivery Fleet</strong> & <strong>Family</strong></span>
+          </div>
+
+          <!-- Quick Trigger Shortcuts -->
+          <div class="trigger-strip">
+            <button class="quick-chip" id="simFallBtn">
+              <span>⚠️ Simulate Fall</span>
+            </button>
+            <button class="quick-chip" id="simVehicleBtn">
+              <span>🏍️ Handlebar Click</span>
+            </button>
+            <button class="quick-chip" id="simVoiceBtn">
+              <span>🗣️ "SSS Help!"</span>
+            </button>
+          </div>
+
+          <!-- Emergency Medical Card Preview -->
+          <div class="medical-preview-card">
+            <div class="card-header">
+              <span class="card-title">🩺 EMERGENCY MEDICAL ID</span>
+              <span class="card-tag">LOCK-SCREEN READY</span>
+            </div>
+            <div class="med-grid">
+              <div><strong>Patient:</strong> Santos Stark</div>
+              <div><strong>Condition:</strong> Post-Angina / High Risk</div>
+              <div><strong>Blood Group:</strong> O+ Positive</div>
+              <div><strong>Allergies:</strong> Penicillin</div>
+              <div><strong>Key Meds:</strong> Aspirin 75mg, Atorvastatin</div>
+              <div><strong>Cardiologist:</strong> Dr. R. Mehta (+1 800-SSS-CARE)</div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- TAB 2: VITALS & ECG MONITOR -->
+        <section id="tab-vitals" class="tab-pane">
+          <div class="pane-title">
+            <h2>🫀 Live Cardiac Monitor</h2>
+            <span class="live-pill">● REALTIME ECG</span>
+          </div>
+
+          <!-- Live ECG Graph Canvas -->
+          <div class="ecg-container">
+            <canvas id="ecgCanvas" width="360" height="130"></canvas>
+            <div class="ecg-overlay-stats">
+              <span id="ecgBpmDisplay">72 BPM</span>
+              <span class="ecg-rhythm" id="ecgStatusText">Sinus Rhythm (Normal)</span>
+            </div>
+          </div>
+
+          <!-- Daily Cardiologist Micro-Tip Card (New in v.56964.1) -->
+          <div class="doctor-tip-card">
+            <div class="doctor-tip-header">
+              <span>🩺 CARDIOLOGIST TIP OF THE DAY</span>
+              <span class="tip-badge">DR. VERIFIED</span>
+            </div>
+            <p id="dailyTipText">"Drinking 1 glass of warm water before sleep helps maintain healthy blood circulation and prevents nighttime arterial constriction."</p>
+          </div>
+
+          <div class="vitals-matrix">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Heart Rate</span>
+                <span class="metric-icon">🫀</span>
+              </div>
+              <div class="metric-value" id="bpmLarge">72 <small>BPM</small></div>
+              <div class="metric-bar"><div class="bar-fill" style="width: 45%;"></div></div>
+              <div class="metric-note">Optimal Rest Range (60-80)</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Blood Oxygen</span>
+                <span class="metric-icon">🫁</span>
+              </div>
+              <div class="metric-value" id="spo2Large">98 <small>%</small></div>
+              <div class="metric-bar"><div class="bar-fill cyan" style="width: 95%;"></div></div>
+              <div class="metric-note">Healthy Lung Diffusion</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Daily Steps</span>
+                <span class="metric-icon">🚶</span>
+              </div>
+              <div class="metric-value">5,420 <small>/ 6k</small></div>
+              <div class="metric-bar"><div class="bar-fill green" style="width: 80%;"></div></div>
+              <div class="metric-note">Cardiac Rehab Goal: 90%</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Smartwatch Sync</span>
+                <span class="metric-icon">⌚</span>
+              </div>
+              <div class="metric-value">CONNECTED</div>
+              <div class="metric-note text-green">BLE GATT 0x180D Synced</div>
+            </div>
+          </div>
+
+          <!-- Medication Reminder -->
+          <div class="med-alert-box">
+            <div class="med-alert-icon">💊</div>
+            <div>
+              <div class="med-title">Next Dose: Aspirin 75mg</div>
+              <div class="med-time">Due in 40 mins (08:30 PM) • Preventative Anti-platelet</div>
+            </div>
+            <button class="btn-sm" id="takeMedBtn">Mark Taken</button>
+          </div>
+
+          <button class="btn-outline w-full" id="exportDoctorReportBtn">
+            📄 Generate 1-Tap Cardiologist PDF Report
+          </button>
+        </section>
+
+        <!-- TAB 3: DELIVERY FLEET RESCUE RADAR -->
+        <section id="tab-fleet" class="tab-pane">
+          <div class="pane-title">
+            <h2>🛵 SSS Street Fleet Radar</h2>
+            <span class="live-pill green" id="fleetBadge">4 RIDERS NEARBY</span>
+          </div>
+
+          <p class="section-desc" id="fleetDescText">
+            Mobilizes instant 10-minute grocery & food delivery riders (Zepto, Swiggy, Blinkit, Uber) within 400m to deliver CPR in under 3 minutes.
+          </p>
+
+          <!-- 8-SECOND CPR TUTORIAL HERO BUTTON -->
+          <button class="btn-cpr-tutorial-hero" id="openCprTutorialBtn">
+            <div class="cpr-tut-icon">🎓</div>
+            <div class="cpr-tut-text">
+              <strong>⚡ 8-Second CPR Micro-Tutorial</strong>
+              <span>Watch animated hand placement & audio guide for helpers</span>
+            </div>
+            <div class="cpr-tut-arrow">▶</div>
+          </button>
+
+          <!-- Gamified 60-Second CPR Rhythm Challenge (New in v.56964.1) -->
+          <div class="cpr-game-card">
+            <div class="cpr-game-header">
+              <span>🎮 110 BPM CPR RHYTHM CHALLENGE</span>
+              <span class="badge-game" id="cprScoreBadge">SCORE: 0</span>
+            </div>
+            <p>Tap the beat box below to match the exact 110 BPM rescue rhythm!</p>
+            <button class="cpr-tap-game-btn" id="cprGameTapBtn">
+              <span>TAP HERE (110 BPM)</span>
+            </button>
+          </div>
+
+          <!-- Interactive Radar Screen -->
+          <div class="radar-box">
+            <canvas id="radarCanvas" width="340" height="260"></canvas>
+            <div class="radar-crosshair"></div>
+            <div class="radar-center-marker">YOU</div>
+          </div>
+
+          <!-- Nearby Responders List -->
+          <div class="riders-list" id="ridersList"></div>
+        </section>
+
+        <!-- TAB 4: VEHICLE & HARDWARE BUTTONS -->
+        <section id="tab-vehicle" class="tab-pane">
+          <div class="pane-title">
+            <h2>🚲 In-Transit & Hardware</h2>
+            <span class="live-pill">BLE 5.0 READY</span>
+          </div>
+
+          <div class="vehicle-card">
+            <div class="card-badge">HANDLEBAR BUTTON</div>
+            <h3>SSS Smart Bike/Moto Clicker</h3>
+            <p>Waterproof BLE button strapped to handlebar. Triggers SOS without looking at screen.</p>
+            <div class="status-row">
+              <span>Status: <strong class="text-green">Paired (CR2032 Battery 98%)</strong></span>
+              <button class="btn-sm-danger" id="testHandlebarBtn">Trigger Test Click</button>
+            </div>
+          </div>
+
+          <div class="vehicle-card">
+            <div class="card-badge">SANTO STARK WEARABLES</div>
+            <h3>SSS Stark Guardian Band & Ring</h3>
+            <p>Optical PPG arterial pulse monitor + Physical recessed emergency button with 1-year battery life.</p>
+            <div class="status-row">
+              <span>Wrist Band: <strong class="text-green">Connected (100% Pulse Link)</strong></span>
+            </div>
+          </div>
+
+          <div class="vehicle-card">
+            <div class="card-badge">CAR DASHBOARD / CARPLAY</div>
+            <h3>Vehicle Motion Guard</h3>
+            <p>Detects sudden deceleration/crashes at >40 km/h and routes emergency audio to car speakers.</p>
+            <div class="speedometer-box">
+              <span class="speed-val" id="currentSpeed">48</span>
+              <span class="speed-unit">km/h (Cruising)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 5: FAIL-SAFES & 1-TAP HEALTH CHECK -->
+        <section id="tab-failsafes" class="tab-pane">
+          <div class="pane-title">
+            <h2>🛡️ 99.99% Fail-Safe Suite</h2>
+            <span class="live-pill cyan">ZERO-FAIL ACTIVE</span>
+          </div>
+
+          <!-- 1-Tap Guardian Health Check Button (New in v.56964.1) -->
+          <button class="guardian-check-hero-btn" id="runWeeklyCheckBtn">
+            <div class="check-icon">🛡️</div>
+            <div class="check-text">
+              <strong>1-Tap Weekly Guardian Health Check</strong>
+              <span>Verifies GPS, Siren Speaker, GSM SMS, and Hardware Sensors</span>
+            </div>
+            <div class="check-status" id="healthCheckStatus">RUN TEST</div>
+          </button>
+
+          <div class="failsafe-list">
+            <div class="fs-item">
+              <div>
+                <strong>🔕 Do Not Disturb (DND) Bypass</strong>
+                <p>Forces STREAM_ALARM to Level 15 (Max Volume).</p>
+              </div>
+              <span class="badge-active">ACTIVE</span>
+            </div>
+
+            <div class="fs-item">
+              <div>
+                <strong>✈️ Airplane Mode Hardware Override</strong>
+                <p>Baseband radio hook auto-acquires cellular towers on SOS.</p>
+              </div>
+              <span class="badge-active">ACTIVE</span>
+            </div>
+
+            <div class="fs-item">
+              <div>
+                <strong>📶 Zero-Network Offline Mesh & Hotspot</strong>
+                <p>Broadcasts BLE packets & local emergency Wi-Fi hotspot.</p>
+              </div>
+              <span class="badge-active">ACTIVE</span>
+            </div>
+
+            <div class="fs-item">
+              <div>
+                <strong>🛰️ Direct-to-Satellite Emergency Beacon</strong>
+                <p>Compressed 16-byte NTN packet uplink for zero-cell areas.</p>
+              </div>
+              <span class="badge-active">ACTIVE</span>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Bottom Navigation Bar -->
+      <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="tab-sos">
+          <span class="nav-icon">🚨</span>
+          <span class="nav-lbl">SOS Shield</span>
+        </button>
+        <button class="nav-item" data-tab="tab-vitals">
+          <span class="nav-icon">🫀</span>
+          <span class="nav-lbl">Vitals</span>
+        </button>
+        <button class="nav-item" data-tab="tab-fleet">
+          <span class="nav-icon">🛵</span>
+          <span class="nav-lbl">Fleet Radar</span>
+        </button>
+        <button class="nav-item" data-tab="tab-vehicle">
+          <span class="nav-icon">🚲</span>
+          <span class="nav-lbl">Vehicle</span>
+        </button>
+        <button class="nav-item" data-tab="tab-failsafes">
+          <span class="nav-icon">🛡️</span>
+          <span class="nav-lbl">Fail-Safes</span>
+        </button>
+      </nav>
+
+    </div>
+  </div>
+
+  <!-- 🎁 BANK OFFERS & PROMO COUPONS MODAL -->
+  <div id="offersModal" class="offers-modal hidden">
+    <div class="offers-card">
+      <div class="offers-modal-header">
+        <div class="offers-modal-title">🎁 SSS PRO & BANK OFFERS</div>
+        <button class="offers-close-btn" id="closeOffersBtn">✕</button>
+      </div>
+
+      <div class="offers-trial-hero">
+        <div class="trial-hero-badge">30-DAY FREE TRIAL ACTIVE</div>
+        <h3>Zero-Risk Heart Guardian Protection</h3>
+        <p>Enjoy Full SSS Pro (Fleet Radar + Fall Alarm) free for your first 30 days. No credit card required!</p>
+      </div>
+
+      <!-- Promo Code Input Box -->
+      <div class="promo-box">
+        <input type="text" id="promoInput" class="promo-input" placeholder="ENTER BANK / PROMO CODE (e.g. HDFC50)" style="text-transform: uppercase;">
+        <button class="promo-apply-btn" id="applyPromoBtn">APPLY</button>
+      </div>
+      <div id="promoSuccessMsg" class="promo-msg hidden"></div>
+
+      <!-- Bank Partner Coupons List -->
+      <div class="bank-coupons-list">
+        <div class="coupon-item" data-code="HDFC50">
+          <div class="bank-badge hdfc">HDFC BANK</div>
+          <div class="coupon-details">
+            <strong>FLAT 50% OFF SSS Pro Plan</strong>
+            <span>Use code: <code>HDFC50</code> with HDFC Cards (₹74/mo)</span>
+          </div>
+          <button class="btn-claim-coupon" onclick="claimCoupon('HDFC50')">CLAIM</button>
+        </div>
+
+        <div class="coupon-item" data-code="ICICI40">
+          <div class="bank-badge icici">ICICI BANK</div>
+          <div class="coupon-details">
+            <strong>FLAT 40% OFF SSS Pro Annual</strong>
+            <span>Use code: <code>ICICI40</code> on iMobile Pay / Cards</span>
+          </div>
+          <button class="btn-claim-coupon" onclick="claimCoupon('ICICI40')">CLAIM</button>
+        </div>
+
+        <div class="coupon-item" data-code="CRED300">
+          <div class="bank-badge cred">CRED COINS</div>
+          <div class="coupon-details">
+            <strong>₹300 OFF SSS Handlebar Button</strong>
+            <span>Redeem code: <code>CRED300</code> with 500 CRED coins</span>
+          </div>
+          <button class="btn-claim-coupon" onclick="claimCoupon('CRED300')">CLAIM</button>
+        </div>
+
+        <div class="coupon-item" data-code="STARFREE">
+          <div class="bank-badge star">STAR HEALTH</div>
+          <div class="coupon-details">
+            <strong>100% FREE SSS Pro for 1 Year</strong>
+            <span>For all Star Health Insurance Senior Policyholders</span>
+          </div>
+          <button class="btn-claim-coupon" onclick="claimCoupon('STARFREE')">CLAIM</button>
+        </div>
+
+        <div class="coupon-item" data-code="APOLLO20">
+          <div class="bank-badge apollo">APOLLO</div>
+          <div class="coupon-details">
+            <strong>FLAT 20% OFF Cardiac Medications</strong>
+            <span>Use code: <code>APOLLO20</code> on Apollo 24/7 refills</span>
+          </div>
+          <button class="btn-claim-coupon" onclick="claimCoupon('APOLLO20')">CLAIM</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8-SECOND CPR ANIMATED MICRO-TUTORIAL MODAL -->
+  <div id="cprTutorialModal" class="cpr-tutorial-modal hidden">
+    <div class="cpr-tutorial-card">
+      <div class="tut-header">
+        <div class="tut-tag">⚡ 8-SECOND HELPER CPR GUIDE</div>
+        <button class="tut-close-btn" id="closeCprTutorialBtn">✕</button>
+      </div>
+
+      <div class="cpr-anim-stage">
+        <svg viewBox="0 0 300 200" width="100%" height="160" class="cpr-anim-svg">
+          <path d="M 80 170 Q 150 190 220 170 L 230 70 Q 150 40 70 70 Z" fill="#151c28" stroke="#00e5ff" stroke-width="2"/>
+          <circle cx="150" cy="115" r="22" fill="#ff2a4b" opacity="0.3" class="pulse-target"/>
+          <circle cx="150" cy="115" r="10" fill="#ff2a4b"/>
+          <path d="M 150 65 L 150 95 M 143 88 L 150 98 L 157 88" stroke="#ffb300" stroke-width="4" stroke-linecap="round" class="anim-arrow"/>
+          <g class="anim-hands">
+            <rect x="130" y="105" width="40" height="20" rx="8" fill="#ffffff" stroke="#ff2a4b" stroke-width="2"/>
+            <text x="150" y="119" font-size="9" font-weight="bold" fill="#000" text-anchor="middle">PUSH 2"</text>
+          </g>
+        </svg>
+
+        <div class="tut-progress-bar">
+          <div class="tut-bar-fill" id="tutBarFill"></div>
+        </div>
+      </div>
+
+      <div class="tut-steps-carousel">
+        <div class="tut-step active" id="tutStepText">
+          <strong>1. Position Hands:</strong> Place heel of hand in center of chest. Interlock fingers.
+        </div>
+      </div>
+
+      <div class="tut-audio-speaker">
+        <span class="speaker-wave"></span>
+        <span id="tutVoiceText">🔊 Speaking: "Place hands in center of chest. Lock elbows straight."</span>
+      </div>
+
+      <button class="btn-primary w-full mt-3" id="startCprFromTutorialBtn">
+        🫀 START 110 BPM CPR RESCUE NOW
+      </button>
+    </div>
+  </div>
+
+  <!-- FULL-SCREEN BYSTANDER EMERGENCY OVERLAY -->
+  <div id="bystanderOverlay" class="bystander-overlay hidden">
+    <div class="bystander-alert-bar">
+      <div class="alert-pulse-badge">🚨 CRITICAL MEDICAL EMERGENCY</div>
+      <h1 class="alert-headline">OWNER IS HAVING A HEART ATTACK!</h1>
+      <p class="alert-subline">Ambulance & Family have been dispatched with GPS coordinates.</p>
+    </div>
+
+    <div class="cpr-metronome-card">
+      <div class="cpr-header">
+        <span>🫀 CPR CHEST COMPRESSION METRONOME</span>
+        <span class="cpr-bpm-tag" id="cprBpmTag">110 BPM</span>
+      </div>
+      
+      <div class="cpr-flashing-target" id="cprTarget">
+        <div class="cpr-icon">👐</div>
+        <div class="cpr-action-text" id="cprActionText">PRESS HERE</div>
+        <div class="cpr-sub-text">Push hard & fast to this flashing beat!</div>
+      </div>
+
+      <div class="cpr-audio-status">
+        <span class="sound-wave-anim"></span>
+        <span id="voicePromptText">🔊 Voice Coach: "Check breathing. Push hard on chest center."</span>
+      </div>
+    </div>
+
+    <div class="bystander-actions-grid">
+      <button class="btn-emergency-call" id="call911Btn">
+        📞 CALL 911 / 112 NOW
+      </button>
+      <button class="btn-defib-radar" id="locateAedBtn">
+        ⚡ LOCATE NEAREST AED (45m)
+      </button>
+    </div>
+
+    <div class="bystander-patient-card">
+      <div class="patient-title">PATIENT MEDICAL PROFILE</div>
+      <div class="patient-grid">
+        <div><strong>Name:</strong> Santos Stark</div>
+        <div><strong>Age / Blood:</strong> 58 • O+ Positive</div>
+        <div><strong>Condition:</strong> Coronary Artery Disease</div>
+        <div><strong>Emergency Meds:</strong> Aspirin in pocket</div>
+        <div><strong>Caregiver:</strong> Sarah (+1 555-0199)</div>
+      </div>
+    </div>
+
+    <div class="bystander-footer">
+      <button class="btn-cancel-sos" id="cancelSosBtn">
+        ✕ CANCEL EMERGENCY / SILENCE SIREN
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

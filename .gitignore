@@ -1,0 +1,23 @@
+# Build and output directories
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+node_modules/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Media and temporary output files
+recording/
+sigma_edit_output.mp4
+sigma_edit_output_temp.mp4
+cutout.png
+
+# Operating system files
+.DS_Store
+Thumbs.db
+*.log
