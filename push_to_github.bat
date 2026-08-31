@@ -1,6 +1,8 @@
 @echo off
+setlocal enabledelayedexpansion
 title Push SSS to GitHub - Santo Stark Studio
 color 0b
+
 echo ==============================================================================
 echo   SSS: Smart Safety Shield (v.56964.1) - GitHub Push Utility
 echo   Santo Stark Studio (SSS)
@@ -10,59 +12,54 @@ echo Target GitHub Repository:
 echo   https://github.com/santostarkstudio/-SSS-Smart-Safety-Shield-v.56964.1-.git
 echo.
 
-:: Check if git is installed
+:: Locate git binary
+set "GIT_EXE=git"
 where git >nul 2>nul
-if %errorlevel% neq 0 (
-    echo [ERROR] Git is not installed or not in your system PATH.
-    echo Please download and install Git from: https://git-scm.com/downloads
-    echo.
-    pause
-    exit /b 1
+if %ERRORLEVEL% neq 0 (
+    if exist "C:\Program Files\Git\cmd\git.exe" (
+        set "GIT_EXE=C:\Program Files\Git\cmd\git.exe"
+    ) else if exist "C:\Program Files\Git\bin\git.exe" (
+        set "GIT_EXE=C:\Program Files\Git\bin\git.exe"
+    ) else if exist "C:\Program Files (x86)\Git\cmd\git.exe" (
+        set "GIT_EXE=C:\Program Files (x86)\Git\cmd\git.exe"
+    ) else if exist "%LOCALAPPDATA%\Programs\Git\cmd\git.exe" (
+        set "GIT_EXE=%LOCALAPPDATA%\Programs\Git\cmd\git.exe"
+    ) else (
+        echo [ERROR] Git was not found in standard paths.
+        echo Please download and install Git from: https://git-scm.com/downloads
+        echo.
+        pause
+        exit /b 1
+    )
 )
 
-echo [1/5] Checking Git Author Identity...
-for /f "tokens=*" %%i in ('git config user.name 2^>nul') do set GIT_USER_NAME=%%i
-for /f "tokens=*" %%i in ('git config user.email 2^>nul') do set GIT_USER_EMAIL=%%i
+echo Using Git: "%GIT_EXE%"
+echo.
 
-if "%GIT_USER_NAME%"=="" (
-    echo Setting default Git Name: Santos Stark
-    git config user.name "Santos Stark"
-) else (
-    echo Git Name: %GIT_USER_NAME%
-)
+:: Abort any lingering rebase or merge conflicts
+"%GIT_EXE%" rebase --abort 2>nul
+"%GIT_EXE%" merge --abort 2>nul
 
-if "%GIT_USER_EMAIL%"=="" (
-    echo Setting default Git Email: santostarkstudio@gmail.com
-    git config user.email "santostarkstudio@gmail.com"
-) else (
-    echo Git Email: %GIT_USER_EMAIL%
-)
+echo [1/4] Configuring Git Identity...
+"%GIT_EXE%" config user.name "Santos Stark"
+"%GIT_EXE%" config user.email "santostarkstudio@gmail.com"
 
 echo.
-echo [2/5] Checking Git repository initialization...
-if not exist ".git" (
-    echo Initializing fresh Git repository...
-    git init
-)
+echo [2/4] Staging and Committing all Project Files...
+"%GIT_EXE%" add .
+"%GIT_EXE%" commit -m "feat: SSS v.56964.1 (Smart Safety Shield) - Core Engine, PRD, README and GNU GPL-3.0 License" 2>nul
+"%GIT_EXE%" branch -M main
 
 echo.
-echo [3/5] Staging all project files (README, PRD, LICENSE, SSS Apps)...
-git add .
+echo [3/4] Linking Remote Repository...
+"%GIT_EXE%" remote remove origin 2>nul
+"%GIT_EXE%" remote add origin https://github.com/santostarkstudio/-SSS-Smart-Safety-Shield-v.56964.1-.git
 
 echo.
-echo [4/5] Creating commit...
-git commit -m "feat: SSS v.56964.1 (Smart Safety Shield) - Core Engine, PRD, README and GNU GPL-3.0 License"
-git branch -M main
+echo [4/4] Pushing to GitHub (Overwriting initial placeholder)...
+"%GIT_EXE%" push -u origin main --force
 
-echo.
-echo [5/5] Setting remote and pushing to GitHub...
-git remote remove origin 2>nul
-git remote add origin https://github.com/santostarkstudio/-SSS-Smart-Safety-Shield-v.56964.1-.git
-
-echo Pushing to branch main...
-git push -u origin main
-
-if %errorlevel% equ 0 (
+if %ERRORLEVEL% equ 0 (
     echo.
     echo ==============================================================================
     echo   [SUCCESS] Successfully pushed SSS v.56964.1 to GitHub!
@@ -70,20 +67,7 @@ if %errorlevel% equ 0 (
     echo ==============================================================================
 ) else (
     echo.
-    echo [NOTE] If GitHub rejected the push because the remote repository was initialized with files,
-    echo syncing and pushing now...
-    git pull origin main --rebase --allow-unrelated-histories 2>nul
-    git push -u origin main
-    if %errorlevel% equ 0 (
-        echo.
-        echo ==============================================================================
-        echo   [SUCCESS] Successfully pushed SSS v.56964.1 to GitHub!
-        echo   View online: https://github.com/santostarkstudio/-SSS-Smart-Safety-Shield-v.56964.1-
-        echo ==============================================================================
-    ) else (
-        echo.
-        echo [INFO] If it opened a browser window to Sign In to GitHub, please complete the sign in!
-    )
+    echo [NOTE] If a browser window opened to Sign In to GitHub, please complete the login!
 )
 
 echo.
