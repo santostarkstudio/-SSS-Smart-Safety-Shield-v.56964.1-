@@ -13,8 +13,11 @@
   <link rel="icon" type="image/svg+xml" href="icon-192.svg">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <!-- OpenStreetMap Leaflet Mapping Library (for AED & Hospital Radar) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
   <div class="app-background"></div>
@@ -31,6 +34,21 @@
           <span class="island-text" id="islandStatus">SSS Shield: 100% Active</span>
         </div>
         <div class="status-icons">
+          <!-- Battery & Signal Indicators -->
+          <div class="hw-indicators" id="hwIndicators">
+            <div class="signal-bars" id="signalBars" title="Signal Strength">
+              <span class="bar b1 active"></span>
+              <span class="bar b2 active"></span>
+              <span class="bar b3 active"></span>
+              <span class="bar b4"></span>
+            </div>
+            <div class="battery-chip" id="batteryChip" title="Device Battery">
+              <div class="battery-icon">
+                <div class="battery-fill" id="batteryFill" style="width:80%"></div>
+              </div>
+              <span id="batteryPct">80%</span>
+            </div>
+          </div>
           <select id="globalLangPicker" class="mini-lang-picker" title="Select Global Language">
             <option value="en-US">🌐 English (US/UK)</option>
             <option value="hi-IN">🇮🇳 Hindi (हिन्दी)</option>
@@ -75,6 +93,15 @@
           </div>
         </div>
         <div class="header-actions">
+          <button class="voice-header-btn" id="voiceToggleBtn" title="Voice Hotword: SSS Help!">
+            🎙️ VOICE: OFF
+          </button>
+          <button class="qr-header-btn" id="openQrPassBtn" title="Emergency Medical QR Pass">
+            🪪 QR PASS
+          </button>
+          <a class="guardian-header-btn" id="openGuardianBtn" href="http://localhost:8080" target="_blank" title="Open Family Guardian & Dispatch Portal">
+            👨‍👩‍👧 GUARDIAN
+          </a>
           <button class="offers-header-btn" id="openOffersBtn" title="Bank Offers & Free Trial">
             🎁 OFFERS
           </button>
@@ -97,6 +124,26 @@
           <div class="trial-active-strip" id="trialActiveStrip">
             <span>🎉 <strong>30-Day Pro Trial Active:</strong> Free Delivery Fleet Rescue & Fall Detection</span>
             <span class="trial-days-left">29 Days Left</span>
+          </div>
+
+          <!-- Real Hands-Free Voice Hotword Strip -->
+          <div class="voice-listening-strip" id="voiceListeningStrip">
+            <div class="voice-mic-icon" id="voiceMicIcon">🎙️</div>
+            <div class="voice-strip-text">
+              <strong id="voiceStatusLabel">Voice Hotword: INACTIVE</strong>
+              <span id="voiceStatusDesc">Say "SSS Help!" or "Emergency" • Tap 'VOICE' in header to listen</span>
+            </div>
+            <span class="voice-sound-wave" id="voiceSoundWave"></span>
+          </div>
+
+          <!-- Live Weather Alert Strip -->
+          <div class="weather-alert-strip" id="weatherAlertStrip">
+            <div class="weather-icon" id="weatherIcon">🌤️</div>
+            <div class="weather-strip-text">
+              <strong id="weatherCondition">Fetching local weather...</strong>
+              <span id="weatherDesc">Tap to see storm warnings & alerts for your area</span>
+            </div>
+            <button class="weather-detail-btn" id="openWeatherBtn">⚡ ALERTS</button>
           </div>
 
           <!-- Top Health Snapshot Bar -->
@@ -147,7 +194,7 @@
           <!-- Quick Trigger Shortcuts -->
           <div class="trigger-strip">
             <button class="quick-chip" id="simFallBtn">
-              <span data-i18n="simFall">⚠️ Simulate Fall</span>
+              <span>📱 Fall Detection (Mobile Only)</span>
             </button>
             <button class="quick-chip" id="simVehicleBtn">
               <span data-i18n="simHandlebar">🏍️ Handlebar Click</span>
@@ -164,12 +211,57 @@
               <span class="card-tag" data-i18n="lockscreenReady">LOCK-SCREEN READY</span>
             </div>
             <div class="med-grid">
-              <div><strong data-i18n="lblPatient">Patient:</strong> Santos Stark</div>
+              <div><strong data-i18n="lblPatient">Patient:</strong> Santosha D (Santos Stark)</div>
               <div><strong data-i18n="lblCondition">Condition:</strong> Post-Angina / High Risk</div>
               <div><strong data-i18n="lblBlood">Blood Group:</strong> O+ Positive</div>
               <div><strong data-i18n="lblAllergies">Allergies:</strong> Penicillin</div>
               <div><strong data-i18n="lblMeds">Key Meds:</strong> Aspirin 75mg, Atorvastatin</div>
               <div><strong data-i18n="lblDoctor">Cardiologist:</strong> Dr. R. Mehta (+1 800-SSS-CARE)</div>
+            </div>
+            <button class="btn-sm-qr" id="openQrFromCardBtn">
+              🪪 View & Download Emergency QR Pass
+            </button>
+          </div>
+
+          <!-- Emergency Contacts Quick-Dial Panel -->
+          <div class="emergency-contacts-panel">
+            <div class="contacts-panel-header">
+              <span class="contacts-title">📞 EMERGENCY CONTACTS</span>
+              <button class="contacts-edit-btn" id="editContactsBtn">✏️ Edit</button>
+            </div>
+            <div class="contacts-grid" id="contactsGrid">
+              <div class="contact-card" data-phone="+18005558911" data-name="Emergency 911">
+                <div class="contact-avatar gov">🚨</div>
+                <div class="contact-info">
+                  <strong>Emergency 911</strong>
+                  <span>National Emergency Line</span>
+                </div>
+                <div class="contact-actions">
+                  <a class="btn-call" href="tel:911" id="call911Contact">📞 Call</a>
+                </div>
+              </div>
+              <div class="contact-card" data-phone="+15550199" data-name="Sarah (ICE)">
+                <div class="contact-avatar ice">👩</div>
+                <div class="contact-info">
+                  <strong>Sarah (ICE Contact)</strong>
+                  <span>+1 555-0199 • Family</span>
+                </div>
+                <div class="contact-actions">
+                  <a class="btn-call" href="tel:+15550199" id="callIceContact">📞 Call</a>
+                  <a class="btn-sms" href="sms:+15550199?body=🚨 SSS ALERT: Santosha D triggered emergency! Location shared." id="smsIceContact">💬 SMS</a>
+                </div>
+              </div>
+              <div class="contact-card" data-phone="+18005778500" data-name="Dr. R. Mehta">
+                <div class="contact-avatar doctor">🩺</div>
+                <div class="contact-info">
+                  <strong>Dr. R. Mehta, MD</strong>
+                  <span>+1 800-SSS-CARE • Cardiologist</span>
+                </div>
+                <div class="contact-actions">
+                  <a class="btn-call" href="tel:+18005778500" id="callDoctorContact">📞 Call</a>
+                  <a class="btn-sms" href="sms:+18005778500?body=🏥 SSS MEDICAL ALERT: Patient Santosha D needs urgent consultation." id="smsDoctorContact">💬 SMS</a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -222,13 +314,36 @@
               <div class="metric-note" data-i18n="stepsNote">Cardiac Rehab Goal: 90%</div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card ble-card">
               <div class="metric-header">
-                <span data-i18n="smartwatch">Smartwatch Sync</span>
+                <span data-i18n="smartwatch">Smartwatch BLE</span>
                 <span class="metric-icon">⌚</span>
               </div>
-              <div class="metric-value" data-i18n="connected">CONNECTED</div>
-              <div class="metric-note text-green">BLE GATT 0x180D Synced</div>
+              <div class="metric-value" id="bleStatusVal" style="font-size: 13px;">READY TO PAIR</div>
+              <button class="btn-ble-pair" id="pairBleBtn">Connect BLE Sensor</button>
+              <div class="metric-note text-green" id="bleDeviceName">Standard GATT 0x180D (HRM)</div>
+            </div>
+          </div>
+
+          <!-- 24h Heart Rate History Chart -->
+          <div class="hr-history-section">
+            <div class="hr-history-header">
+              <span class="hr-history-title">📊 24-Hour Heart Rate History</span>
+              <span class="hr-history-range" id="hrHistoryRange">Min: 58 • Max: 114 BPM</span>
+            </div>
+            <div class="hr-chart-container">
+              <canvas id="hrHistoryCanvas" width="340" height="90"></canvas>
+              <div class="hr-chart-zones">
+                <span class="zone-label zone-high">⚠️ High</span>
+                <span class="zone-label zone-normal">✓ Normal</span>
+                <span class="zone-label zone-low">ℹ️ Rest</span>
+              </div>
+            </div>
+            <div class="hr-history-stats">
+              <div class="hr-stat"><span>Avg</span><strong id="hrAvgStat">72</strong><small>BPM</small></div>
+              <div class="hr-stat"><span>Min</span><strong id="hrMinStat">58</strong><small>BPM</small></div>
+              <div class="hr-stat"><span>Max</span><strong id="hrMaxStat">114</strong><small>BPM</small></div>
+              <div class="hr-stat"><span>Zone</span><strong id="hrZoneStat" class="text-green">Normal</strong><small>Risk</small></div>
             </div>
           </div>
 
@@ -258,6 +373,16 @@
             Mobilizes instant 10-minute grocery & food delivery riders (Zepto, Swiggy, Blinkit, Uber) within 400m to deliver CPR in under 3 minutes.
           </p>
 
+          <!-- 30-SECOND INTERACTIVE CPR RHYTHM CHALLENGE HERO BUTTON -->
+          <button class="btn-cpr-game-hero" id="openCprGameBtn">
+            <div class="cpr-game-icon">🎮</div>
+            <div class="cpr-game-text">
+              <strong>🏆 30-Second CPR Rhythm Challenge</strong>
+              <span>Interactive speed training • Earn Good Samaritan Rescuer Badge</span>
+            </div>
+            <div class="cpr-game-arrow">▶</div>
+          </button>
+
           <!-- 5-10 SECOND CPR TUTORIAL HERO BUTTON -->
           <button class="btn-cpr-tutorial-hero" id="openCprTutorialBtn">
             <div class="cpr-tut-icon">🎓</div>
@@ -268,11 +393,27 @@
             <div class="cpr-tut-arrow">▶</div>
           </button>
 
+          <!-- Fleet View Switcher: Radar vs Interactive Map -->
+          <div class="fleet-view-selector">
+            <button class="view-pill active" id="viewRadarCanvasBtn">📡 2D Fleet Radar</button>
+            <button class="view-pill" id="viewLeafletMapBtn">🗺️ Live AED & Hospital Map</button>
+          </div>
+
           <!-- Interactive Radar Screen -->
-          <div class="radar-box">
+          <div id="radarViewContainer" class="radar-box">
             <canvas id="radarCanvas" width="340" height="260"></canvas>
             <div class="radar-crosshair"></div>
             <div class="radar-center-marker">YOU</div>
+          </div>
+
+          <!-- Interactive OpenStreetMap / Leaflet Map Container -->
+          <div id="mapViewContainer" class="map-view-box hidden">
+            <div id="leafletMap" class="leaflet-map-element"></div>
+            <div class="map-legend">
+              <span><span class="legend-dot red"></span> You (Victim)</span>
+              <span><span class="legend-dot yellow"></span> AED (45m)</span>
+              <span><span class="legend-dot green"></span> Cardiac ICU</span>
+            </div>
           </div>
 
           <!-- Nearby Responders List -->
@@ -453,45 +594,74 @@
     </div>
   </div>
 
-  <!-- 5-10 SECOND CPR ANIMATED MICRO-TUTORIAL MODAL -->
+  <!-- 🏥 AHA REAL CLINICAL CPR ANIMATED PROCEDURE TUTORIAL MODAL -->
   <div id="cprTutorialModal" class="cpr-tutorial-modal hidden">
     <div class="cpr-tutorial-card">
       <div class="tut-header">
-        <div class="tut-tag" data-i18n="cprTutHeader">⚡ 8-SECOND HELPER CPR GUIDE</div>
+        <div>
+          <div class="tut-tag">🏥 REAL CPR RESUSCITATION PROCEDURE</div>
+          <div class="tut-subtag">AHA & ERC Clinical Emergency Standards</div>
+        </div>
         <button class="tut-close-btn" id="closeCprTutorialBtn">✕</button>
       </div>
 
-      <div class="cpr-anim-stage">
-        <svg viewBox="0 0 300 200" width="100%" height="160" class="cpr-anim-svg">
-          <path d="M 80 170 Q 150 190 220 170 L 230 70 Q 150 40 70 70 Z" fill="#151c28" stroke="#00e5ff" stroke-width="2"/>
-          <circle cx="150" cy="115" r="22" fill="#ff2a4b" opacity="0.3" class="pulse-target"/>
-          <circle cx="150" cy="115" r="10" fill="#ff2a4b"/>
-          <path d="M 150 65 L 150 95 M 143 88 L 150 98 L 157 88" stroke="#ffb300" stroke-width="4" stroke-linecap="round" class="anim-arrow"/>
-          <g class="anim-hands">
-            <rect x="130" y="105" width="40" height="20" rx="8" fill="#ffffff" stroke="#ff2a4b" stroke-width="2"/>
-            <text x="150" y="119" font-size="9" font-weight="bold" fill="#000" text-anchor="middle">PUSH 2"</text>
-          </g>
-        </svg>
+      <!-- Step Indicator Navigation Pills -->
+      <div class="tut-pills-row" id="tutPillsRow">
+        <button class="tut-pill active" data-step="0">1. Response</button>
+        <button class="tut-pill" data-step="1">2. Call 911</button>
+        <button class="tut-pill" data-step="2">3. Airway</button>
+        <button class="tut-pill" data-step="3">4. Hands</button>
+        <button class="tut-pill" data-step="4">5. Posture</button>
+        <button class="tut-pill" data-step="5">6. 110 BPM</button>
+      </div>
+
+      <!-- Main Animated Graphic Stage -->
+      <div class="cpr-anim-stage" id="cprAnimStage">
+        <!-- Dynamic Stage Container for the Active Step's SVG Graphic -->
+        <div id="cprStepSvgContainer" class="cpr-svg-container">
+          <!-- Step SVG will be rendered here dynamically -->
+        </div>
 
         <div class="tut-progress-bar">
           <div class="tut-bar-fill" id="tutBarFill"></div>
         </div>
       </div>
 
-      <div class="tut-steps-carousel">
-        <div class="tut-step active" id="tutStepText" data-i18n="step1Text">
-          <strong>1. Position Hands:</strong> Place heel of hand in center of chest. Interlock fingers.
+      <!-- Clinical Instructions & Pro Tips -->
+      <div class="tut-info-panel">
+        <div class="tut-step-badge" id="tutStepBadge">STEP 1 OF 6</div>
+        <h3 class="tut-step-title" id="tutStepTitle">Check Responsiveness & Scene Safety</h3>
+        <p class="tut-step-desc" id="tutStepDesc">
+          Ensure the scene is safe for you and the victim. Tap both shoulders firmly and shout loudly: <em>"Hey, are you OK?!"</em>. Check for any movement or verbal response.
+        </p>
+        <div class="tut-protip-box">
+          <span class="protip-icon">💡</span>
+          <span class="protip-text" id="tutStepProTip"><strong>Clinical Rule:</strong> Never shake or move the patient's head or neck if spinal trauma is suspected.</span>
         </div>
       </div>
 
+      <!-- Audio Coach Live Status -->
       <div class="tut-audio-speaker">
         <span class="speaker-wave"></span>
-        <span id="tutVoiceText">🔊 Speaking: "Place hands in center of chest. Lock elbows straight."</span>
+        <span id="tutVoiceText">🔊 Speaking: "Check for danger. Tap shoulders firmly and shout: Are you OK?"</span>
       </div>
 
-      <button class="btn-primary w-full mt-3" id="startCprFromTutorialBtn" data-i18n="startNowBtn">
-        🫀 START 110 BPM CPR RESCUE NOW
-      </button>
+      <!-- Playback & Navigation Controls -->
+      <div class="tut-nav-controls">
+        <button class="tut-ctrl-btn" id="tutPrevBtn">◀ Prev</button>
+        <button class="tut-ctrl-btn tut-play-btn" id="tutPlayBtn">⏸️ Pause</button>
+        <button class="tut-ctrl-btn" id="tutNextBtn">Next ▶</button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="tut-actions-grid">
+        <button class="btn-game-bridge" id="launchGameFromTutBtn">
+          🎮 Launch 30s Rhythm Game
+        </button>
+        <button class="btn-rescue-bridge" id="startCprFromTutorialBtn">
+          🚨 Start Real SOS Sequence
+        </button>
+      </div>
     </div>
   </div>
 
@@ -533,7 +703,7 @@
     <div class="bystander-patient-card">
       <div class="patient-title" data-i18n="patientProfileTitle">PATIENT MEDICAL PROFILE</div>
       <div class="patient-grid">
-        <div><strong data-i18n="lblPatient">Name:</strong> Santos Stark</div>
+        <div><strong data-i18n="lblPatient">Name:</strong> Santosha D (Santos Stark)</div>
         <div><strong data-i18n="lblBlood">Age / Blood:</strong> 58 • O+ Positive</div>
         <div><strong data-i18n="lblCondition">Condition:</strong> Coronary Artery Disease</div>
         <div><strong data-i18n="lblMeds">Emergency Meds:</strong> Aspirin in pocket</div>
@@ -545,6 +715,271 @@
       <button class="btn-cancel-sos" id="cancelSosBtn" data-i18n="btnCancelEmergency">
         ✕ CANCEL EMERGENCY / SILENCE SIREN
       </button>
+    </div>
+  </div>
+
+  <!-- 🎮 30-SECOND INTERACTIVE CPR RHYTHM CHALLENGE MODAL -->
+  <div id="cprGameModal" class="cpr-game-modal hidden">
+    <div class="cpr-game-card">
+      <div class="game-header">
+        <div class="game-tag">🏆 30s CPR RHYTHM TRAINER</div>
+        <div class="game-header-actions">
+          <button class="btn-game-help" id="gameViewGuideBtn">📖 Procedure Guide</button>
+          <button class="game-close-btn" id="closeCprGameBtn">✕</button>
+        </div>
+      </div>
+
+      <div class="game-status-bar">
+        <div class="game-stat">
+          <span class="stat-label">TIME LEFT</span>
+          <span class="stat-value" id="gameTimer">30s</span>
+        </div>
+        <div class="game-stat">
+          <span class="stat-label">CURRENT PACE</span>
+          <span class="stat-value" id="gameLiveBpm">0 <small>BPM</small></span>
+        </div>
+        <div class="game-stat">
+          <span class="stat-label">COMPRESSIONS</span>
+          <span class="stat-value" id="gameCount">0</span>
+        </div>
+      </div>
+
+      <!-- Live Rhythm Gauge & Feedback -->
+      <div class="game-gauge-container">
+        <div class="game-target-indicator">
+          <span>TARGET: 100 - 120 BPM (AHA Golden Standard)</span>
+        </div>
+        <div class="game-feedback-badge" id="gameFeedbackBadge">READY TO START</div>
+      </div>
+
+      <!-- Tactile Compression Tapper Target -->
+      <div class="game-compression-area">
+        <div class="game-avatar-stage" id="gameAvatarStage">
+          <div class="avatar-rescuer" id="avatarRescuer">
+            <span class="avatar-hands-symbol">👐</span>
+            <div class="avatar-arms-line"></div>
+          </div>
+          <div class="avatar-chest-bar" id="avatarChestBar">
+            <div class="avatar-sternum-glow"></div>
+            <span class="avatar-chest-text">STERNUM RECOIL READY</span>
+          </div>
+        </div>
+        <button class="game-press-btn" id="gamePressBtn">
+          <div class="btn-ripple" id="gameRipple"></div>
+          <span class="game-hand-icon">👐</span>
+          <span class="game-press-text">PUSH CHEST</span>
+          <span class="game-sub-text">TAP OR PRESS SPACEBAR</span>
+        </button>
+      </div>
+
+      <div class="game-instructions">
+        <span>💡 Push hard and fast at 110 beats per minute. Build muscle memory before real emergencies.</span>
+      </div>
+
+      <!-- Game Result & Certificate View (Hidden initially) -->
+      <div id="gameResultView" class="game-result-view hidden">
+        <h3 id="resultTitle">🎖️ Training Complete!</h3>
+        <p id="resultScoreText">You maintained 110 BPM with 94% accuracy!</p>
+        <canvas id="cprCertificateCanvas" width="340" height="200" class="cert-canvas"></canvas>
+        <div class="cert-actions">
+          <button class="btn-primary" id="downloadCertBtn">📥 Download Good Samaritan Certificate</button>
+          <button class="btn-outline" id="restartGameBtn">🔄 Try Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🪪 OFFLINE EMERGENCY MEDICAL QR PASS MODAL -->
+  <div id="medicalQrModal" class="medical-qr-modal hidden">
+    <div class="medical-qr-card">
+      <div class="qr-modal-header">
+        <div class="qr-modal-tag">🪪 EMERGENCY MEDICAL PASS</div>
+        <button class="qr-close-btn" id="closeQrPassBtn">✕</button>
+      </div>
+
+      <div class="qr-pass-body">
+        <p class="qr-instruction">
+          First Responders: Scan this QR code to view offline medical history, emergency contacts, and allergies.
+        </p>
+
+        <!-- QR Canvas Container -->
+        <div class="qr-code-frame">
+          <canvas id="medicalQrCanvas" width="220" height="220"></canvas>
+          <div class="qr-logo-overlay">SSS</div>
+        </div>
+
+        <div class="qr-patient-summary">
+          <div class="summary-row"><strong>Patient:</strong> <span>Santosha D (Santos Stark)</span></div>
+          <div class="summary-row"><strong>Blood Group:</strong> <span class="badge-blood">O+ POSITIVE</span></div>
+          <div class="summary-row"><strong>Condition:</strong> <span>Coronary Artery Disease (CAD)</span></div>
+          <div class="summary-row"><strong>ICE Contact:</strong> <span>Sarah (+1 555-0199)</span></div>
+          <div class="summary-row"><strong>Cardiologist:</strong> <span>Dr. R. Mehta (+1 800-SSS-CARE)</span></div>
+        </div>
+
+        <button class="btn-save-wallpaper" id="saveWallpaperBtn">
+          📱 Save as Phone Lock-Screen Wallpaper
+        </button>
+        <p class="wallpaper-note">Generates a high-res lock-screen image so paramedics can scan without unlocking your phone.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📄 REAL PRINTABLE CLINICAL CARDIOLOGIST PDF REPORT MODAL -->
+  <div id="doctorReportModal" class="doctor-report-modal hidden">
+    <div class="report-container">
+      <div class="report-actions-bar no-print">
+        <button class="btn-print-report" id="printReportBtn">🖨️ Print / Save as PDF</button>
+        <button class="report-close-btn" id="closeReportBtn">✕ Close</button>
+      </div>
+
+      <!-- Hospital Clinical Report Sheet -->
+      <div class="clinical-sheet" id="clinicalSheet">
+        <div class="sheet-header">
+          <div class="clinic-branding">
+            <div class="clinic-logo">🏥 SSS CLINICAL</div>
+            <div>
+              <h2>SANTO STARK STUDIO CARDIOLOGY CENTER</h2>
+              <p>Autonomous Telemetry & Ambulatory Monitoring Division • v.56964.1</p>
+            </div>
+          </div>
+          <div class="sheet-meta">
+            <div><strong>REPORT ID:</strong> SSS-CAD-56964</div>
+            <div><strong>DATE:</strong> <span id="reportDate"></span></div>
+            <div><strong>LEAD:</strong> Lead II Continuous ECG</div>
+          </div>
+        </div>
+
+        <hr class="report-divider">
+
+        <div class="sheet-patient-box">
+          <div class="patient-cell"><strong>Patient Name:</strong> Santosha D (Santos Stark)</div>
+          <div class="patient-cell"><strong>Age / Gender:</strong> 58 Yrs / Male</div>
+          <div class="patient-cell"><strong>Blood Type:</strong> O+ Positive</div>
+          <div class="patient-cell"><strong>Primary Dx:</strong> Post-Angina / Coronary Artery Disease</div>
+          <div class="patient-cell"><strong>Monitoring Duration:</strong> 30 Days Continuous Telemetry</div>
+          <div class="patient-cell"><strong>Attending:</strong> Dr. R. Mehta, MD (Cardiology)</div>
+        </div>
+
+        <h3 class="sheet-section-title">1. REAL-TIME ECG TELEMETRY STRIP (LEAD II)</h3>
+        <div class="report-ecg-frame">
+          <canvas id="reportEcgCanvas" width="600" height="120"></canvas>
+          <div class="ecg-strip-labels">
+            <span>25 mm/sec • 10 mm/mV</span>
+            <span>Sinus Rhythm • Rate: 72 BPM • QTc: 410 ms • PR: 160 ms</span>
+          </div>
+        </div>
+
+        <h3 class="sheet-section-title">2. 30-DAY VITALS SUMMARY & TRENDS</h3>
+        <table class="clinical-table">
+          <thead>
+            <tr>
+              <th>Biomarker</th>
+              <th>Mean Value</th>
+              <th>Reference Range</th>
+              <th>Clinical Assessment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Resting Heart Rate</td>
+              <td><strong>71 BPM</strong> (Min: 58, Max: 114)</td>
+              <td>60 - 100 BPM</td>
+              <td><span class="status-ok">Normal Sinus</span></td>
+            </tr>
+            <tr>
+              <td>SpO2 Saturation</td>
+              <td><strong>98.2%</strong></td>
+              <td>&gt; 95.0%</td>
+              <td><span class="status-ok">Optimal Oxygenation</span></td>
+            </tr>
+            <tr>
+              <td>Physical Activity</td>
+              <td><strong>5,420 steps/day</strong></td>
+              <td>&gt; 5,000 steps</td>
+              <td><span class="status-ok">90.3% Rehab Goal Met</span></td>
+            </tr>
+            <tr>
+              <td>Kinematic Drops / Falls</td>
+              <td><strong>0 Fatal Events</strong></td>
+              <td>0 Events</td>
+              <td><span class="status-ok">No Trauma Logged</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="sheet-section-title">3. MEDICATION ADHERENCE & SAFETY LOG</h3>
+        <div class="med-compliance-box">
+          <div><strong>Aspirin 75mg:</strong> 30/30 Doses Verified (100% Adherence)</div>
+          <div><strong>Atorvastatin 20mg:</strong> Evening dose logged daily</div>
+          <div><strong>Allergies:</strong> Penicillin (Severe Urticaria / Anaphylaxis Risk)</div>
+        </div>
+
+        <div class="sheet-signatures">
+          <div class="sig-box">
+            <div class="sig-line">Santosha D</div>
+            <span>Patient Signature</span>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Dr. R. Mehta, MD, FACC</div>
+            <span>Verified Cardiologist / AI Telemetry Board</span>
+          </div>
+        </div>
+
+        <div class="sheet-footer">
+          <p>Generated autonomously by SSS: Smart Safety Shield (v.56964.1) • Santo Stark Studio • GNU GPL-3.0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Fall Detector removed — available in mobile app version -->
+
+
+  <!-- 🌩️ WEATHER ALERTS MODAL -->
+  <div id="weatherModal" class="weather-modal hidden">
+    <div class="weather-card">
+      <div class="weather-modal-header">
+        <div class="weather-modal-title" id="weatherModalTitle">🌤️ Local Weather & Alerts</div>
+        <button class="weather-close-btn" id="closeWeatherBtn">✕</button>
+      </div>
+      <div class="weather-body">
+        <div class="weather-main-display">
+          <div class="weather-big-icon" id="weatherBigIcon">🌤️</div>
+          <div class="weather-main-stats">
+            <div class="weather-temp" id="weatherTemp">--°C</div>
+            <div class="weather-feels" id="weatherFeels">Fetching...</div>
+          </div>
+        </div>
+        <div class="weather-details-grid">
+          <div class="weather-detail-item">
+            <span class="wd-label">💧 Humidity</span>
+            <span class="wd-val" id="weatherHumidity">--%</span>
+          </div>
+          <div class="weather-detail-item">
+            <span class="wd-label">💨 Wind</span>
+            <span class="wd-val" id="weatherWind">-- km/h</span>
+          </div>
+          <div class="weather-detail-item">
+            <span class="wd-label">🌡️ Feels Like</span>
+            <span class="wd-val" id="weatherFeelsLike">--°C</span>
+          </div>
+          <div class="weather-detail-item">
+            <span class="wd-label">☁️ Cloud Cover</span>
+            <span class="wd-val" id="weatherCloud">--%</span>
+          </div>
+        </div>
+        <div class="weather-alerts-list" id="weatherAlertsList">
+          <div class="alert-item loading">⏳ Loading weather data for your location...</div>
+        </div>
+        <div class="weather-cardiac-tip" id="weatherCardiacTip">
+          <span class="tip-icon">🫀</span>
+          <div>
+            <strong>Cardiac Advisory:</strong>
+            <span id="weatherTipText">Fetching conditions...</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

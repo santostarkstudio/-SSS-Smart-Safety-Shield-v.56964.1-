@@ -70,9 +70,9 @@ SSS bridges the 4-minute gap through **Dual-Vector Activation**:
 1. **Primary UI Tap:** Central glowing tactile SOS button with 0ms response.
 2. **Accidental Tap Defense:** 5-second graceful vibration countdown with a large `✕ CANCEL` button.
 3. **Hardware Button Combo:** Triple-click physical Power button (or Volume Up + Down hold) for blind-triggering inside pockets.
-4. **Kinematic Fall & Immobility Watchdog:** Accelerometer threshold detection (>3.0G impact followed by 10s zero motion) initiates 10s audio warning before automated SOS broadcast.
-5. **Acoustic Voice Hotword:** Low-power DSP keyword spotting for *"SSS Help!"* or *"Emergency SSS!"*.
-6. **BLE 5.0 Vehicle Handlebar Clicker:** Bluetooth Low Energy button mounted on bike handlebars or car steering wheels for in-transit activation at 60 km/h.
+4. **Kinematic Fall & Immobility Watchdog (DeviceMotion):** Real-time HTML5 3-axis accelerometer monitoring ($\sqrt{a_x^2 + a_y^2 + a_z^2}$) detecting free-fall drop followed by $>3.0G$ impact shock, launching a 5-second cancelable countdown before automated SOS dispatch.
+5. **Real Hands-Free Acoustic Voice Hotword:** Continuous Web Speech Recognition (`webkitSpeechRecognition`) keyword spotting for *"SSS Help!"*, *"Emergency"*, *"Heart Attack"*, *"Bachao"*, or *"Sahayam"*.
+6. **Web Bluetooth (BLE 5.0) & Handlebar Clicker:** Direct browser connection to BLE Heart Rate GATT Service (`0x180D`) and handlebar buttons for in-transit emergency activation at 60 km/h.
 
 ### 3.2 Acoustic Beacon & CPR Coach Engine
 - **Audio Frequency Profile:** Dual-tone rising sawtooth frequency sweep (800 Hz to 1600 Hz) optimized for acoustic penetration through ambient traffic rumble and crowds.
@@ -82,17 +82,19 @@ SSS bridges the 4-minute gap through **Dual-Vector Activation**:
 - **AHA/ERC Resuscitation Standards:** Strobe metronome pulses at **110 BPM (545.45 ms cycle)** with 50% duty cycle.
 - **Multilingual Spoken Audio:** Supports 30+ global and Indian regional languages (English, Hindi, Telugu, Tamil, Spanish, Mandarin, Arabic, etc.).
 - **8-Second Helper Micro-Tutorial:** High-contrast animated vector diagram demonstrating hand placement, locked elbows, and 2-inch compression depth.
+- **🎮 30-Second CPR Rhythm Training Challenge:** Interactive resuscitation game with real-time compression interval measurement, instant BPM feedback, AHA compliance scoring, and downloadable Good Samaritan Rescuer Certification.
 
-### 3.3 SSS Street Fleet Radar Engine
+### 3.3 SSS Street Fleet Radar & Leaflet AED Locator
 - **Geofencing Radius:** Dynamic 400-meter radius around victim.
+- **Interactive OpenStreetMap & Leaflet AED Radar:** Real-time GPS pinpointing victim location, nearest public AED defibrillators (45m Metro Station AED, 160m Mall AED), and 24/7 Cardiac ICU hospitals with walking route polyline.
 - **Partner Integrations:** Simulated and API-ready dispatch for Zepto, Blinkit, Swiggy, Zomato, and Uber delivery riders.
 - **Delivery App State Integration:** Freezes delivery timer upon acceptance, displays turn-by-turn navigation, and awards CSR LifeSaver karma points & bounties.
 
 ### 3.4 Cardiac Vitals & Diagnostic Telemetry
-- **Animated ECG Canvas:** Real-time mathematical rendering of P-QRS-T complex at customizable heart rates (default: 72 BPM).
+- **Animated ECG Canvas:** Real-time mathematical rendering of P-QRS-T complex dynamically reacting to live BLE heart rate telemetry (40–220 BPM).
 - **Vitals Integration:** Blood Oxygen saturation (SpO2 %), resting heart rate, and step counter.
-- **Medication Adherence Tracker:** Timed pill reminders (e.g., Aspirin 75mg) with confirmation logging.
-- **1-Tap Cardiologist PDF Report:** Instant compilation of ECG trends, vitals history, and medication compliance into a clinical PDF.
+- **🪪 Offline Emergency Medical QR Pass:** High-contrast offline QR generator encoding blood group, CAD diagnosis, allergies, and ICE contacts, featuring a 1-tap **1080x1920 Lock-Screen Wallpaper Generator** for first responders.
+- **📄 1-Tap Hospital Cardiologist PDF Report:** Complete clinical diagnostic summary formatted with `@media print` for 1-click printing or PDF export (includes Lead II ECG strip, 30-day vitals trends, and medication compliance for Santosha D).
 
 ### 3.5 SSS Gram Guardian (Rural Protocol)
 - Operates under 0-bar or 2G network conditions.

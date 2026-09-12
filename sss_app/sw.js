@@ -3,7 +3,7 @@
  * Caches all emergency audio, scripts, and UI for 0ms offline boot
  */
 
-const CACHE_NAME = 'sss-shield-v56964-offline';
+const CACHE_NAME = 'sss-shield-v56964-1-superpower-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
