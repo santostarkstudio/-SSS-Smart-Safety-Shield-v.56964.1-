@@ -21,3 +21,10 @@ cutout.png
 .DS_Store
 Thumbs.db
 *.log
+
+# Private credentials and secrets (NEVER commit to git)
+.env
+*.env
+local_secrets.json
+secrets.json
+private_config.json
