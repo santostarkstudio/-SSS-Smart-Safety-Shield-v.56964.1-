@@ -96,6 +96,9 @@
           <button class="voice-header-btn" id="voiceToggleBtn" title="Voice Hotword: SSS Help!">
             🎙️ VOICE: OFF
           </button>
+          <button class="boat-header-btn" id="openBoatWatchBtn" title="boAt Lunar Discovery Companion Hub">
+            ⌚ boAt WATCH
+          </button>
           <button class="qr-header-btn" id="openQrPassBtn" title="Emergency Medical QR Pass">
             🪪 QR PASS
           </button>
@@ -314,14 +317,17 @@
               <div class="metric-note" data-i18n="stepsNote">Cardiac Rehab Goal: 90%</div>
             </div>
 
-            <div class="metric-card ble-card">
+            <div class="metric-card ble-card boat-vitals-card">
               <div class="metric-header">
-                <span data-i18n="smartwatch">Smartwatch BLE</span>
+                <span>boAt Lunar Discovery</span>
                 <span class="metric-icon">⌚</span>
               </div>
-              <div class="metric-value" id="bleStatusVal" style="font-size: 13px;">READY TO PAIR</div>
-              <button class="btn-ble-pair" id="pairBleBtn">Connect BLE Sensor</button>
-              <div class="metric-note text-green" id="bleDeviceName">Standard GATT 0x180D (HRM)</div>
+              <div class="metric-value" id="bleStatusVal" style="font-size: 13px;">READY TO SYNC</div>
+              <div class="boat-vitals-actions">
+                <button class="btn-ble-pair" id="pairBleBtn">⚡ Connect Watch</button>
+                <button class="btn-boat-open-hub" id="openBoatModalFromVitalsBtn">📱 Open Hub</button>
+              </div>
+              <div class="metric-note text-green" id="bleDeviceName">boAt Crest Replacement Active • BLE 5.2</div>
             </div>
           </div>
 
@@ -980,6 +986,442 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ⌚ boAt LUNAR DISCOVERY DEDICATED SMARTWATCH COMPANION HUB MODAL -->
+  <div id="boatWatchModal" class="boat-watch-modal hidden">
+    <div class="boat-watch-card">
+      
+      <!-- Modal Header -->
+      <div class="boat-modal-header">
+        <div class="boat-brand-info">
+          <div class="boat-watch-icon">⌚</div>
+          <div>
+            <div class="boat-modal-title">boAt Lunar Discovery</div>
+            <div class="boat-modal-subtitle">Dedicated Health & Distress Companion • SSS Engine</div>
+          </div>
+        </div>
+        <div class="boat-header-meta">
+          <span class="boat-status-badge" id="boatStatusBadge">⚪ READY TO PAIR</span>
+          <span class="boat-battery-pill" id="boatBatteryPill">🔋 88%</span>
+          <button class="boat-modal-close" id="closeBoatWatchBtn">✕</button>
+        </div>
+      </div>
+
+      <!-- Watch Hardware Banner & Quick Controls -->
+      <div class="boat-hardware-banner">
+        <div class="boat-device-chassis">
+          <div class="watch-screen-preview" id="watchScreenPreview">
+            <div class="watch-screen-time" id="watchClock">12:45</div>
+            <div class="watch-screen-bpm">❤️ <span id="watchScreenBpmVal">72</span> BPM</div>
+            <div class="watch-screen-steps">🚶 <span id="watchScreenStepsVal">7,842</span></div>
+            <div class="watch-screen-status" id="watchScreenStatus">BLE 5.2 SYNCED</div>
+          </div>
+        </div>
+        <div class="boat-hardware-details">
+          <div class="boat-model-badge">MODEL: boAt LUNAR DISCOVERY</div>
+          <div class="boat-hardware-specs">
+            <span>✨ 1.39" HD Display</span> • 
+            <span>📞 BT Calling</span> • 
+            <span>🩺 Optical PPG + Red SpO2</span> • 
+            <span>💧 IP68</span>
+          </div>
+          <div class="boat-connection-buttons">
+            <button class="btn-boat-connect" id="btnConnectBoatBle">⚡ Scan & Pair boAt Watch</button>
+            <button class="btn-boat-simulate" id="btnSimulateBoatBle">🎮 Live Sim Telemetry</button>
+          </div>
+          <div class="boat-rssi-info" id="boatRssiInfo">
+            Signal: <strong id="boatRssiVal">-62 dBm (Excellent)</strong> • GATT: <strong>0x180D / Nordic UART</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- boAt Sub-Navigation Tabs -->
+      <div class="boat-tabs-row">
+        <button class="boat-tab-btn active" data-boattab="boat-tab-rings">⭕ Activity Rings</button>
+        <button class="boat-tab-btn" data-boattab="boat-tab-health">🩺 Health Vitals</button>
+        <button class="boat-tab-btn" data-boattab="boat-tab-sports">🏃 700+ Sports</button>
+        <button class="boat-tab-btn" data-boattab="boat-tab-smart">📱 Wrist Hub & SOS</button>
+      </div>
+
+      <!-- Modal Body Tab Panes -->
+      <div class="boat-modal-body">
+
+        <!-- TAB 1: ACTIVITY RINGS & DAILY MOVEMENT -->
+        <div id="boat-tab-rings" class="boat-tab-pane active">
+          <div class="rings-section-layout">
+            
+            <!-- Triple SVG Activity Rings -->
+            <div class="rings-svg-container">
+              <svg viewBox="0 0 220 220" class="triple-activity-rings" id="boatActivityRingsSvg">
+                <!-- Background Tracks -->
+                <circle cx="110" cy="110" r="85" class="ring-bg ring-cal-bg" stroke-width="14"/>
+                <circle cx="110" cy="110" r="65" class="ring-bg ring-steps-bg" stroke-width="14"/>
+                <circle cx="110" cy="110" r="45" class="ring-bg ring-dist-bg" stroke-width="14"/>
+
+                <!-- Active Colored Progress Rings -->
+                <!-- Red: Calories (r=85, circ=534) -->
+                <circle id="ringCaloriesCircle" cx="110" cy="110" r="85" class="ring-progress ring-cal" stroke-width="14"
+                  stroke-dasharray="534" stroke-dashoffset="106" stroke-linecap="round"/>
+                <!-- Green: Steps (r=65, circ=408) -->
+                <circle id="ringStepsCircle" cx="110" cy="110" r="65" class="ring-progress ring-steps" stroke-width="14"
+                  stroke-dasharray="408" stroke-dashoffset="90" stroke-linecap="round"/>
+                <!-- Blue: Distance (r=45, circ=282) -->
+                <circle id="ringDistCircle" cx="110" cy="110" r="45" class="ring-progress ring-dist" stroke-width="14"
+                  stroke-dasharray="282" stroke-dashoffset="56" stroke-linecap="round"/>
+              </svg>
+              <div class="rings-center-icon">🔥</div>
+            </div>
+
+            <!-- Rings Data Cards -->
+            <div class="rings-data-grid">
+              <div class="ring-metric-card ring-card-cal">
+                <div class="rm-header">
+                  <span class="rm-dot red-dot"></span>
+                  <strong>MOVE / CALORIES</strong>
+                </div>
+                <div class="rm-val"><span id="ringCalVal">420</span> <small>/ 500 kcal</small></div>
+                <div class="rm-bar"><div class="rm-bar-fill red" id="ringCalBar" style="width: 84%;"></div></div>
+                <div class="rm-sub">84% Daily Target Achieved</div>
+              </div>
+
+              <div class="ring-metric-card ring-card-steps">
+                <div class="rm-header">
+                  <span class="rm-dot green-dot"></span>
+                  <strong>DAILY STEPS</strong>
+                </div>
+                <div class="rm-val"><span id="ringStepsVal">7,842</span> <small>/ 10,000</small></div>
+                <div class="rm-bar"><div class="rm-bar-fill green" id="ringStepsBar" style="width: 78%;"></div></div>
+                <div class="rm-sub">2,158 steps to goal</div>
+              </div>
+
+              <div class="ring-metric-card ring-card-dist">
+                <div class="rm-header">
+                  <span class="rm-dot cyan-dot"></span>
+                  <strong>DISTANCE COVERED</strong>
+                </div>
+                <div class="rm-val"><span id="ringDistVal">5.6</span> <small>/ 7.0 km</small></div>
+                <div class="rm-bar"><div class="rm-bar-fill cyan" id="ringDistBar" style="width: 80%;"></div></div>
+                <div class="rm-sub">Estimated stride: 0.72m</div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="activity-bottom-summary">
+            <div class="act-stat-pill">
+              <span class="stat-icon">⏱️</span>
+              <div>
+                <small>Active Workout</small>
+                <strong>48 Mins</strong>
+              </div>
+            </div>
+            <div class="act-stat-pill">
+              <span class="stat-icon">🧍</span>
+              <div>
+                <small>Standing Target</small>
+                <strong>10 / 12 Hours</strong>
+              </div>
+            </div>
+            <div class="act-stat-pill">
+              <span class="stat-icon">🏅</span>
+              <div>
+                <small>Crest Streak</small>
+                <strong>14 Days In a Row</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: HEALTH PARAMETERS (boAt Crest Specs) -->
+        <div id="boat-tab-health" class="boat-tab-pane">
+          <div class="health-metrics-grid">
+            
+            <!-- Real-time Pulse -->
+            <div class="boat-health-box">
+              <div class="bh-head">
+                <span>❤️ Heart Rate</span>
+                <span class="bh-tag tag-live">REAL-TIME</span>
+              </div>
+              <div class="bh-val"><span id="boatHubHr">72</span> <small>BPM</small></div>
+              <div class="bh-desc">Resting Pulse: <strong>Sinus Normal</strong> (AHA Zone)</div>
+              <div class="bh-range">Min: 58 • Max: 114 BPM</div>
+            </div>
+
+            <!-- Blood Oxygen (SpO2) -->
+            <div class="boat-health-box">
+              <div class="bh-head">
+                <span>🫁 Blood Oxygen (SpO2)</span>
+                <span class="bh-tag tag-cyan">RED OPTICAL</span>
+              </div>
+              <div class="bh-val"><span id="boatHubSpo2">98</span> <small>%</small></div>
+              <div class="bh-desc">Lung Gas Diffusion: <strong>Optimal (≥95%)</strong></div>
+              <div class="bh-range">Hypoxia Watchdog: Active</div>
+            </div>
+
+            <!-- Stress Monitor -->
+            <div class="boat-health-box">
+              <div class="bh-head">
+                <span>🧘 Stress Monitor</span>
+                <span class="bh-tag tag-gold">HRV ENGINE</span>
+              </div>
+              <div class="bh-val"><span id="boatHubStress">34</span> <small>/ 100</small></div>
+              <div class="bh-desc">Current State: <strong class="text-green">Relaxed / Normal</strong></div>
+              <div class="bh-range">Range: 0-29 Relaxed • 30-59 Normal</div>
+            </div>
+
+            <!-- Sleep Tracking Breakdown -->
+            <div class="boat-health-box sleep-box">
+              <div class="bh-head">
+                <span>🌙 Sleep Architecture</span>
+                <span class="bh-tag tag-purple">87/100 RECOVERY</span>
+              </div>
+              <div class="sleep-breakdown-bar">
+                <div class="sb-segment deep" style="width: 28%;" title="Deep Sleep (2h 15m)"></div>
+                <div class="sb-segment light" style="width: 52%;" title="Light Sleep (4h 30m)"></div>
+                <div class="sb-segment rem" style="width: 15%;" title="REM Sleep (1h 12m)"></div>
+                <div class="sb-segment awake" style="width: 5%;" title="Awake (18m)"></div>
+              </div>
+              <div class="sleep-legend">
+                <span><span class="dot deep"></span>Deep 2h 15m</span>
+                <span><span class="dot light"></span>Light 4h 30m</span>
+                <span><span class="dot rem"></span>REM 1h 12m</span>
+                <span><span class="dot awake"></span>Awake 18m</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Interactive Guided Breathing Trainer -->
+          <div class="guided-breathing-card">
+            <div class="gb-left">
+              <div class="gb-title">🌬️ Guided Breathing Trainer</div>
+              <div class="gb-desc">2-minute deep diaphragmatic breathing exercise. Lowers heart rate, reduces cortisol stress, and enhances HRV parasympathetic tone.</div>
+              <div class="gb-controls">
+                <button class="btn-start-breathing" id="btnStartBreathing">▶ Start 2-Min Session</button>
+                <button class="btn-stop-breathing hidden" id="btnStopBreathing">⏹ Stop</button>
+                <span class="gb-timer" id="gbTimer">02:00</span>
+              </div>
+              <div class="gb-phase-label" id="gbPhaseLabel">Ready to begin. Tap Start.</div>
+            </div>
+            <div class="gb-right">
+              <div class="breathing-orb-container">
+                <div class="breathing-orb" id="breathingOrb">
+                  <span class="orb-icon">🫁</span>
+                </div>
+                <div class="orb-ripple" id="orbRipple"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Female Wellness Card -->
+          <div class="female-wellness-strip">
+            <div class="fw-icon">🌸</div>
+            <div class="fw-text">
+              <strong>Female Wellness Tracker:</strong> Day 14 of 28 • Predicted Ovulation Window. Symptoms: None logged today.
+            </div>
+            <button class="fw-log-btn" id="btnLogWellness">📝 Log</button>
+          </div>
+        </div>
+
+        <!-- TAB 3: 700+ SPORTS MODES -->
+        <div id="boat-tab-sports" class="boat-tab-pane">
+          <div class="sports-header-row">
+            <div>
+              <h3>🏃 700+ Activity & Sports Tracker</h3>
+              <p>Select your workout mode to log calories, heart rate peaks, and GPS pace from your boAt watch.</p>
+            </div>
+            <div class="sports-badge">boAt Crest Sports Engine</div>
+          </div>
+
+          <!-- Sports Selection Grid -->
+          <div class="sports-modes-grid" id="sportsGrid">
+            <div class="sport-card active" data-sport="Outdoor Run" data-calrate="9.5">
+              <div class="sport-icon">🏃</div>
+              <div class="sport-name">Outdoor Run</div>
+              <div class="sport-rate">~9.5 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Brisk Walking" data-calrate="4.5">
+              <div class="sport-icon">🚶</div>
+              <div class="sport-name">Brisk Walking</div>
+              <div class="sport-rate">~4.5 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Outdoor Cycling" data-calrate="8.2">
+              <div class="sport-icon">🚴</div>
+              <div class="sport-name">Outdoor Cycling</div>
+              <div class="sport-rate">~8.2 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Cricket" data-calrate="6.0">
+              <div class="sport-icon">🏏</div>
+              <div class="sport-name">Cricket Match</div>
+              <div class="sport-rate">~6.0 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Football" data-calrate="9.8">
+              <div class="sport-icon">⚽</div>
+              <div class="sport-name">Football</div>
+              <div class="sport-rate">~9.8 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Gym & Weights" data-calrate="6.5">
+              <div class="sport-icon">🏋️</div>
+              <div class="sport-name">Gym Weights</div>
+              <div class="sport-rate">~6.5 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Yoga & Stretch" data-calrate="3.8">
+              <div class="sport-icon">🧘</div>
+              <div class="sport-name">Yoga Flow</div>
+              <div class="sport-rate">~3.8 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Badminton" data-calrate="7.5">
+              <div class="sport-icon">🏸</div>
+              <div class="sport-name">Badminton</div>
+              <div class="sport-rate">~7.5 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Swimming" data-calrate="8.8">
+              <div class="sport-icon">🏊</div>
+              <div class="sport-name">Swimming</div>
+              <div class="sport-rate">~8.8 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Basketball" data-calrate="8.4">
+              <div class="sport-icon">🏀</div>
+              <div class="sport-name">Basketball</div>
+              <div class="sport-rate">~8.4 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="HIIT Training" data-calrate="11.0">
+              <div class="sport-icon">⚡</div>
+              <div class="sport-name">HIIT Blast</div>
+              <div class="sport-rate">~11.0 kcal/min</div>
+            </div>
+            <div class="sport-card" data-sport="Free Training" data-calrate="5.5">
+              <div class="sport-icon">⏱️</div>
+              <div class="sport-name">Free Workout</div>
+              <div class="sport-rate">~5.5 kcal/min</div>
+            </div>
+          </div>
+
+          <!-- Active Live Workout Tracker -->
+          <div class="active-workout-console">
+            <div class="aw-left">
+              <div class="aw-label">CURRENT SESSION:</div>
+              <div class="aw-sport-title" id="awSelectedSport">🏃 Outdoor Run</div>
+              <div class="aw-timer" id="awStopwatch">00:00:00</div>
+            </div>
+            <div class="aw-stats">
+              <div class="aw-stat-item">
+                <small>CALORIES</small>
+                <strong><span id="awCaloriesBurned">0.0</span> kcal</strong>
+              </div>
+              <div class="aw-stat-item">
+                <small>HEART RATE</small>
+                <strong><span id="awLiveHr">72</span> BPM</strong>
+              </div>
+              <div class="aw-stat-item">
+                <small>AVG PACE</small>
+                <strong id="awLivePace">--'--"/km</strong>
+              </div>
+            </div>
+            <div class="aw-actions">
+              <button class="btn-start-workout" id="btnToggleWorkout">▶ Start Workout</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: SMART WRIST HUB & SOS (Hardware Actions) -->
+        <div id="boat-tab-smart" class="boat-tab-pane">
+          <div class="smart-wrist-grid">
+            
+            <!-- 🚨 WRIST PHYSICAL EMERGENCY SOS CARD -->
+            <div class="smart-wrist-card wrist-sos-card">
+              <div class="sw-header">
+                <span class="sw-icon">🚨</span>
+                <div>
+                  <strong>boAt Watch Hardware SOS Trigger</strong>
+                  <p>Long-press crown / 3-tap emergency simulation</p>
+                </div>
+              </div>
+              <div class="sw-body">
+                <p>Pressing the Emergency SOS button on your boAt Lunar Discovery automatically triggers the full SSS Cloud Distress Beacon: dispatches delivery fleet, alerts family via SMS, and transmits to Guardian Portal (:8080).</p>
+                <button class="btn-wrist-sos-trigger" id="btnTriggerWristSos">
+                  🚨 SIMULATE WATCH HARDWARE SOS
+                </button>
+                <small class="sw-note">✓ Linked directly to SSS Real-Time Emergency Engine</small>
+              </div>
+            </div>
+
+            <!-- 🧭 TURN-BY-TURN WRIST NAVIGATION CARD -->
+            <div class="smart-wrist-card">
+              <div class="sw-header">
+                <span class="sw-icon">🧭</span>
+                <div>
+                  <strong>Turn-by-Turn Wrist Navigation HUD</strong>
+                  <p>OpenStreetMap & Hospital Route Streamer</p>
+                </div>
+              </div>
+              <div class="sw-body">
+                <div class="watch-nav-screen-preview">
+                  <div class="wn-arrow">⬆</div>
+                  <div class="wn-distance">In 150m: Turn Right</div>
+                  <div class="wn-dest">🏥 City Trauma Center (1.2 km)</div>
+                </div>
+                <div class="sw-btn-row">
+                  <button class="btn-sw-action" id="btnPushNavHospital">🏥 Push Hospital Route to Watch</button>
+                  <button class="btn-sw-action outline" id="btnSimulateNavTurn">⮡ Next Turn</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🪪 QR TRAY HUB CARD -->
+            <div class="smart-wrist-card">
+              <div class="sw-header">
+                <span class="sw-icon">🪪</span>
+                <div>
+                  <strong>Wrist QR Tray Hub</strong>
+                  <p>Emergency Medical ID & Payment Pass</p>
+                </div>
+              </div>
+              <div class="sw-body">
+                <div class="watch-qr-screen-preview">
+                  <div class="wqr-qr-box">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=SSS-MED-ID:Santosha-D-Opos-CAD-ICE:+15550199" alt="Watch QR Pass" width="100" height="100"/>
+                  </div>
+                  <div class="wqr-meta">
+                    <strong>Santosha D • O+</strong>
+                    <span>Paramedic 1-Scan Medical ID</span>
+                  </div>
+                </div>
+                <button class="btn-sw-action" id="btnPushQrToTray">📲 Push Medical ID to boAt QR Tray</button>
+              </div>
+            </div>
+
+            <!-- 📞 BLUETOOTH CALLING & AUDIO CARD -->
+            <div class="smart-wrist-card">
+              <div class="sw-header">
+                <span class="sw-icon">📞</span>
+                <div>
+                  <strong>Bluetooth Calling & Audio</strong>
+                  <p>Speaker & Microphone Link Status</p>
+                </div>
+              </div>
+              <div class="sw-body">
+                <div class="sw-info-item">
+                  <span>HFP Audio State:</span>
+                  <strong class="text-green">Ready (Paired via Phone BT)</strong>
+                </div>
+                <div class="sw-info-item">
+                  <span>Speaker / Mic:</span>
+                  <strong>boAt Discovery_Phone Audio Active</strong>
+                </div>
+                <button class="btn-sw-action outline" id="btnTestHapticVibrate">
+                  📳 Vibrate Watch Alarm (Test Haptic)
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 

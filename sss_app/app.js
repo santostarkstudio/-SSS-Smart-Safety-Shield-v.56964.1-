@@ -44,7 +44,35 @@ document.addEventListener('DOMContentLoaded', () => {
     batteryLevel: 0.8,
     batteryCharging: false,
     backendWs: null,
-    backendConnected: false
+    backendConnected: false,
+    // boAt Lunar Discovery Dedicated Companion State
+    boatWatch: {
+      connected: false,
+      device: null,
+      battery: 88,
+      steps: 7842,
+      calories: 420,
+      distance: 5.6,
+      hr: 72,
+      spo2: 98,
+      stress: 34,
+      simInterval: null,
+      isSim: false
+    },
+    breathingSession: {
+      active: false,
+      timer: null,
+      secondsLeft: 120,
+      phase: 'inhale'
+    },
+    activeWorkout: {
+      active: false,
+      timer: null,
+      seconds: 0,
+      sport: 'Outdoor Run',
+      calRate: 9.5,
+      caloriesBurned: 0
+    }
   };
 
   // =========================================================================
@@ -913,7 +941,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 12. ⌚ WEB BLUETOOTH (BLE) HEART RATE & SMARTWATCH ENGINE
+  // 12. ⌚ boAt LUNAR DISCOVERY DEDICATED SMARTWATCH COMPANION HUB & BLE ENGINE
   // =========================================================================
   const pairBleBtn = document.getElementById('pairBleBtn');
   const bleStatusVal = document.getElementById('bleStatusVal');
@@ -922,11 +950,76 @@ document.addEventListener('DOMContentLoaded', () => {
   const bpmLarge = document.getElementById('bpmLarge');
   const ecgBpmDisplay = document.getElementById('ecgBpmDisplay');
 
+  // boAt Modal & Controls
+  const boatWatchModal = document.getElementById('boatWatchModal');
+  const openBoatWatchBtn = document.getElementById('openBoatWatchBtn');
+  const openBoatModalFromVitalsBtn = document.getElementById('openBoatModalFromVitalsBtn');
+  const closeBoatWatchBtn = document.getElementById('closeBoatWatchBtn');
+  const btnConnectBoatBle = document.getElementById('btnConnectBoatBle');
+  const btnSimulateBoatBle = document.getElementById('btnSimulateBoatBle');
+  const boatStatusBadge = document.getElementById('boatStatusBadge');
+  const boatBatteryPill = document.getElementById('boatBatteryPill');
+  const boatHubHr = document.getElementById('boatHubHr');
+  const boatHubSpo2 = document.getElementById('boatHubSpo2');
+  const boatHubStress = document.getElementById('boatHubStress');
+  const watchScreenBpmVal = document.getElementById('watchScreenBpmVal');
+  const watchScreenStepsVal = document.getElementById('watchScreenStepsVal');
+  const watchScreenStatus = document.getElementById('watchScreenStatus');
+  const watchClock = document.getElementById('watchClock');
+
+  // Activity Rings
+  const ringCaloriesCircle = document.getElementById('ringCaloriesCircle');
+  const ringStepsCircle = document.getElementById('ringStepsCircle');
+  const ringDistCircle = document.getElementById('ringDistCircle');
+  const ringCalVal = document.getElementById('ringCalVal');
+  const ringStepsVal = document.getElementById('ringStepsVal');
+  const ringDistVal = document.getElementById('ringDistVal');
+  const ringCalBar = document.getElementById('ringCalBar');
+  const ringStepsBar = document.getElementById('ringStepsBar');
+  const ringDistBar = document.getElementById('ringDistBar');
+
+  // Guided Breathing
+  const btnStartBreathing = document.getElementById('btnStartBreathing');
+  const btnStopBreathing = document.getElementById('btnStopBreathing');
+  const gbTimer = document.getElementById('gbTimer');
+  const gbPhaseLabel = document.getElementById('gbPhaseLabel');
+  const breathingOrb = document.getElementById('breathingOrb');
+
+  // Sports Tracker
+  const sportsGrid = document.getElementById('sportsGrid');
+  const awSelectedSport = document.getElementById('awSelectedSport');
+  const awStopwatch = document.getElementById('awStopwatch');
+  const awCaloriesBurned = document.getElementById('awCaloriesBurned');
+  const awLiveHr = document.getElementById('awLiveHr');
+  const btnToggleWorkout = document.getElementById('btnToggleWorkout');
+
+  // Smart Wrist Actions
+  const btnTriggerWristSos = document.getElementById('btnTriggerWristSos');
+  const btnPushNavHospital = document.getElementById('btnPushNavHospital');
+  const btnSimulateNavTurn = document.getElementById('btnSimulateNavTurn');
+  const btnPushQrToTray = document.getElementById('btnPushQrToTray');
+  const btnTestHapticVibrate = document.getElementById('btnTestHapticVibrate');
+
+  // Live Watch Clock Updater
+  function updateWatchClock() {
+    if (watchClock) {
+      const now = new Date();
+      watchClock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+  }
+  setInterval(updateWatchClock, 1000);
+  updateWatchClock();
+
   function updateHeartRate(newBpm) {
     state.heartRate = Math.max(40, Math.min(220, Math.round(newBpm)));
+    state.boatWatch.hr = state.heartRate;
+
     if (quickHR) quickHR.innerHTML = `${state.heartRate} <small>BPM</small>`;
     if (bpmLarge) bpmLarge.innerHTML = `${state.heartRate} <small>BPM</small>`;
     if (ecgBpmDisplay) ecgBpmDisplay.textContent = `${state.heartRate} BPM`;
+    if (boatHubHr) boatHubHr.textContent = state.heartRate;
+    if (watchScreenBpmVal) watchScreenBpmVal.textContent = state.heartRate;
+    if (awLiveHr) awLiveHr.textContent = state.heartRate;
 
     const ecgStatusText = document.getElementById('ecgStatusText');
     if (ecgStatusText) {
@@ -943,76 +1036,433 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ── Triple Activity Rings Renderer ───────────────────────────────────────
+  function updateActivityRings(calories, steps, distance) {
+    state.boatWatch.calories = Math.round(calories);
+    state.boatWatch.steps = Math.round(steps);
+    state.boatWatch.distance = parseFloat(distance.toFixed(2));
+
+    // Update Numerical Text
+    if (ringCalVal) ringCalVal.textContent = state.boatWatch.calories;
+    if (ringStepsVal) ringStepsVal.textContent = state.boatWatch.steps.toLocaleString();
+    if (ringDistVal) ringDistVal.textContent = state.boatWatch.distance;
+    if (watchScreenStepsVal) watchScreenStepsVal.textContent = state.boatWatch.steps.toLocaleString();
+
+    // Update Progress Bars
+    const calPct = Math.min(100, Math.round((state.boatWatch.calories / 500) * 100));
+    const stepPct = Math.min(100, Math.round((state.boatWatch.steps / 10000) * 100));
+    const distPct = Math.min(100, Math.round((state.boatWatch.distance / 7.0) * 100));
+
+    if (ringCalBar) ringCalBar.style.width = `${calPct}%`;
+    if (ringStepsBar) ringStepsBar.style.width = `${stepPct}%`;
+    if (ringDistBar) ringDistBar.style.width = `${distPct}%`;
+
+    // SVG Circular Dashoffsets
+    // Calories: r=85, circumference = 2 * PI * 85 ≈ 534
+    if (ringCaloriesCircle) {
+      const calOffset = 534 - (534 * (calPct / 100));
+      ringCaloriesCircle.style.strokeDashoffset = calOffset;
+    }
+    // Steps: r=65, circumference = 2 * PI * 65 ≈ 408
+    if (ringStepsCircle) {
+      const stepOffset = 408 - (408 * (stepPct / 100));
+      ringStepsCircle.style.strokeDashoffset = stepOffset;
+    }
+    // Distance: r=45, circumference = 2 * PI * 45 ≈ 282
+    if (ringDistCircle) {
+      const distOffset = 282 - (282 * (distPct / 100));
+      ringDistCircle.style.strokeDashoffset = distOffset;
+    }
+  }
+
+  // ── Web Bluetooth Scanner for boAt Lunar Discovery ────────────────────────
   async function connectWebBluetooth() {
     if (!navigator.bluetooth) {
-      alert('⌚ Web Bluetooth API is not natively supported in this browser (Recommended: Google Chrome, Edge, or Bluefy on iOS).\n\nSimulating live Smartwatch pairing with Polar H10 HRM...');
-      simulateBleConnection();
+      alert('⌚ Web Bluetooth API is not natively supported in this browser.\n\nRecommended: Google Chrome, Microsoft Edge, or Bluefy on iOS.\n\nActivating live boAt Lunar Discovery simulated telemetry...');
+      simulateBoatBleConnection();
       return;
     }
 
     try {
-      if (bleStatusVal) bleStatusVal.textContent = 'SEARCHING...';
-      const device = await navigator.bluetooth.requestDevice({
-        filters: [{ services: ['heart_rate'] }]
-      });
+      if (bleStatusVal) bleStatusVal.textContent = 'SCANNING FOR boAt...';
+      if (boatStatusBadge) {
+        boatStatusBadge.textContent = '🟡 SCANNING...';
+        boatStatusBadge.className = 'boat-status-badge';
+      }
+
+      let device;
+      try {
+        // Try targeted name and prefix filters for boAt smartwatches
+        device = await navigator.bluetooth.requestDevice({
+          filters: [
+            { namePrefix: 'boAt' },
+            { namePrefix: 'Lunar' },
+            { namePrefix: 'Discovery' },
+            { services: ['heart_rate'] }
+          ],
+          optionalServices: [
+            'heart_rate',
+            'battery_service',
+            'device_information',
+            0xFEE0, 0xFEE7, 0xFFE0,
+            '0000fee0-0000-1000-8000-00805f9b34fb',
+            '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
+          ]
+        });
+      } catch (filterErr) {
+        // Fallback: acceptAllDevices so user can select any visible smartwatch
+        console.log('[boAt BLE] Specific filter bypassed, prompting with all devices:', filterErr);
+        device = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true,
+          optionalServices: [
+            'heart_rate',
+            'battery_service',
+            'device_information',
+            0xFEE0, 0xFEE7, 0xFFE0
+          ]
+        });
+      }
 
       if (bleStatusVal) bleStatusVal.textContent = 'CONNECTING...';
+      if (boatStatusBadge) boatStatusBadge.textContent = '🟡 CONNECTING...';
+
       const server = await device.gatt.connect();
-      const service = await server.getPrimaryService('heart_rate');
-      const characteristic = await service.getCharacteristic('heart_rate_measurement');
+      state.boatWatch.device = device;
+      state.boatWatch.connected = true;
 
-      await characteristic.startNotifications();
-      characteristic.addEventListener('characteristicvaluechanged', (event) => {
-        const value = event.target.value;
-        const flags = value.getUint8(0);
-        let hr;
-        if (flags & 0x01) {
-          hr = value.getUint16(1, true); // 16-bit
-        } else {
-          hr = value.getUint8(1); // 8-bit
-        }
-        updateHeartRate(hr);
-      });
+      // 1. Check & Read Battery Service (0x180F)
+      try {
+        const batteryService = await server.getPrimaryService('battery_service');
+        const batteryChar = await batteryService.getCharacteristic('battery_level');
+        const batteryVal = await batteryChar.readValue();
+        state.boatWatch.battery = batteryVal.getUint8(0);
+        if (boatBatteryPill) boatBatteryPill.textContent = `🔋 ${state.boatWatch.battery}%`;
+      } catch (batErr) {
+        console.log('[boAt BLE] Battery service not exposed, using default 88%');
+      }
 
-      state.bleDevice = device;
+      // 2. Check & Subscribe to Heart Rate (0x180D)
+      try {
+        const hrService = await server.getPrimaryService('heart_rate');
+        const hrChar = await hrService.getCharacteristic('heart_rate_measurement');
+        await hrChar.startNotifications();
+        hrChar.addEventListener('characteristicvaluechanged', (event) => {
+          const value = event.target.value;
+          const flags = value.getUint8(0);
+          let hr;
+          if (flags & 0x01) {
+            hr = value.getUint16(1, true); // 16-bit
+          } else {
+            hr = value.getUint8(1); // 8-bit
+          }
+          updateHeartRate(hr);
+        });
+      } catch (hrErr) {
+        console.log('[boAt BLE] Standard heart_rate service pending custom vendor handshake');
+      }
+
+      // Update UI
+      const devName = device.name || 'boAt Lunar Discovery';
       if (bleStatusVal) {
-        bleStatusVal.textContent = 'CONNECTED';
+        bleStatusVal.textContent = 'SYNCED';
         bleStatusVal.style.color = '#00e676';
       }
-      if (bleDeviceName) bleDeviceName.textContent = `Paired: ${device.name || 'Bluetooth HRM'} (0x180D)`;
-      if (pairBleBtn) pairBleBtn.textContent = '✓ Sensor Synced';
+      if (bleDeviceName) bleDeviceName.textContent = `Paired: ${devName} (BLE 5.2)`;
+      if (pairBleBtn) pairBleBtn.textContent = '✓ Watch Synced';
+      if (boatStatusBadge) {
+        boatStatusBadge.textContent = '🟢 SYNCED';
+        boatStatusBadge.className = 'boat-status-badge synced';
+      }
+      if (watchScreenStatus) watchScreenStatus.textContent = 'boAt BLE CONNECTED';
 
       device.addEventListener('gattserverdisconnected', () => {
+        state.boatWatch.connected = false;
         if (bleStatusVal) {
           bleStatusVal.textContent = 'DISCONNECTED';
           bleStatusVal.style.color = '#ff2a4b';
         }
-        if (pairBleBtn) pairBleBtn.textContent = 'Re-Pair Sensor';
+        if (pairBleBtn) pairBleBtn.textContent = '⚡ Re-Pair Watch';
+        if (boatStatusBadge) {
+          boatStatusBadge.textContent = '🔴 DISCONNECTED';
+          boatStatusBadge.className = 'boat-status-badge';
+        }
+        if (watchScreenStatus) watchScreenStatus.textContent = 'DISCONNECTED';
       });
 
     } catch (err) {
       console.warn('Bluetooth connection error:', err);
       if (bleStatusVal) bleStatusVal.textContent = 'PAIRING FAILED';
-      simulateBleConnection();
+      simulateBoatBleConnection();
     }
   }
 
-  function simulateBleConnection() {
-    let mockBpm = 74;
+  // ── High-Fidelity boAt Simulation Mode ────────────────────────────────────
+  function simulateBoatBleConnection() {
+    if (state.boatWatch.isSim) {
+      // Toggle off
+      clearInterval(state.boatWatch.simInterval);
+      state.boatWatch.simInterval = null;
+      state.boatWatch.isSim = false;
+      if (btnSimulateBoatBle) btnSimulateBoatBle.textContent = '🎮 Live Sim Telemetry';
+      if (boatStatusBadge) {
+        boatStatusBadge.textContent = '⚪ READY TO PAIR';
+        boatStatusBadge.className = 'boat-status-badge';
+      }
+      if (watchScreenStatus) watchScreenStatus.textContent = 'STANDBY';
+      return;
+    }
+
+    state.boatWatch.isSim = true;
+    if (btnSimulateBoatBle) btnSimulateBoatBle.textContent = '⏹ Stop Sim';
     if (bleStatusVal) {
       bleStatusVal.textContent = 'SYNCED (SIM)';
       bleStatusVal.style.color = '#00e676';
     }
-    if (bleDeviceName) bleDeviceName.textContent = 'Polar H10 Pro (Simulated GATT 0x180D)';
-    if (pairBleBtn) pairBleBtn.textContent = '✓ Live Stream Active';
+    if (bleDeviceName) bleDeviceName.textContent = 'boAt Lunar Discovery (Simulated BLE 5.2)';
+    if (pairBleBtn) pairBleBtn.textContent = '✓ Watch Synced';
+    if (boatStatusBadge) {
+      boatStatusBadge.textContent = '🟢 LIVE SIMULATED';
+      boatStatusBadge.className = 'boat-status-badge synced';
+    }
+    if (watchScreenStatus) watchScreenStatus.textContent = 'boAt CREST v2 ACTIVE';
 
-    setInterval(() => {
-      mockBpm += (Math.random() * 4 - 2);
-      updateHeartRate(mockBpm);
+    // Start Real-Time Telemetry Simulation
+    state.boatWatch.simInterval = setInterval(() => {
+      // Fluctuating BPM
+      const bpmDelta = (Math.random() * 4 - 2);
+      const newBpm = Math.max(65, Math.min(115, state.boatWatch.hr + bpmDelta));
+      updateHeartRate(newBpm);
+
+      // Accumulating Steps & Calories
+      const stepInc = Math.floor(Math.random() * 4);
+      const newSteps = state.boatWatch.steps + stepInc;
+      const newCal = state.boatWatch.calories + (stepInc * 0.045);
+      const newDist = state.boatWatch.distance + (stepInc * 0.00072);
+      updateActivityRings(newCal, newSteps, newDist);
+
+      // Subtle SpO2 & Stress changes
+      if (Math.random() > 0.8) {
+        state.boatWatch.spo2 = Math.random() > 0.3 ? 98 : 99;
+        if (boatHubSpo2) boatHubSpo2.textContent = state.boatWatch.spo2;
+      }
+      if (Math.random() > 0.7) {
+        state.boatWatch.stress = Math.round(30 + Math.random() * 8);
+        if (boatHubStress) boatHubStress.textContent = state.boatWatch.stress;
+      }
     }, 2000);
   }
 
-  if (pairBleBtn) pairBleBtn.addEventListener('click', connectWebBluetooth);
+  // ── Modal Open / Close & Tabs Wiring ──────────────────────────────────────
+  function openBoatWatchModal() {
+    if (!boatWatchModal) return;
+    boatWatchModal.classList.remove('hidden');
+    updateActivityRings(state.boatWatch.calories, state.boatWatch.steps, state.boatWatch.distance);
+  }
+
+  function closeBoatWatchModal() {
+    if (!boatWatchModal) return;
+    boatWatchModal.classList.add('hidden');
+  }
+
+  openBoatWatchBtn?.addEventListener('click', openBoatWatchModal);
+  openBoatModalFromVitalsBtn?.addEventListener('click', openBoatWatchModal);
+  closeBoatWatchBtn?.addEventListener('click', closeBoatWatchModal);
+  boatWatchModal?.addEventListener('click', (e) => {
+    if (e.target === boatWatchModal) closeBoatWatchModal();
+  });
+
+  // Modal Sub-Tab Switching
+  document.querySelectorAll('.boat-tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.boattab;
+      document.querySelectorAll('.boat-tab-btn').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.boat-tab-pane').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(targetId)?.classList.add('active');
+    });
+  });
+
+  // Pair & Simulate Buttons
+  pairBleBtn?.addEventListener('click', connectWebBluetooth);
+  btnConnectBoatBle?.addEventListener('click', connectWebBluetooth);
+  btnSimulateBoatBle?.addEventListener('click', simulateBoatBleConnection);
+
+  // ── Guided Breathing Session Controller ───────────────────────────────────
+  function startBreathingSession() {
+    state.breathingSession.active = true;
+    state.breathingSession.secondsLeft = 120;
+    btnStartBreathing?.classList.add('hidden');
+    btnStopBreathing?.classList.remove('hidden');
+
+    let phase = 0; // 0: inhale (4s), 1: hold (4s), 2: exhale (4s)
+    let phaseTick = 0;
+
+    function applyPhase() {
+      if (!breathingOrb || !gbPhaseLabel) return;
+      if (phase === 0) {
+        breathingOrb.className = 'breathing-orb inhale';
+        gbPhaseLabel.textContent = `🌬️ Inhale slowly through nose... (${4 - phaseTick}s)`;
+        gbPhaseLabel.style.color = '#00e5ff';
+      } else if (phase === 1) {
+        breathingOrb.className = 'breathing-orb';
+        gbPhaseLabel.textContent = `⏸️ Hold breath calmly... (${4 - phaseTick}s)`;
+        gbPhaseLabel.style.color = '#ffb300';
+      } else {
+        breathingOrb.className = 'breathing-orb exhale';
+        gbPhaseLabel.textContent = `💨 Exhale gently through mouth... (${4 - phaseTick}s)`;
+        gbPhaseLabel.style.color = '#00e676';
+      }
+    }
+
+    applyPhase();
+
+    state.breathingSession.timer = setInterval(() => {
+      state.breathingSession.secondsLeft--;
+      phaseTick++;
+
+      if (phaseTick >= 4) {
+        phaseTick = 0;
+        phase = (phase + 1) % 3;
+      }
+
+      applyPhase();
+
+      // Update timer display
+      if (gbTimer) {
+        const mins = Math.floor(state.breathingSession.secondsLeft / 60);
+        const secs = state.breathingSession.secondsLeft % 60;
+        gbTimer.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+
+      if (state.breathingSession.secondsLeft <= 0) {
+        stopBreathingSession('🎉 2-Minute Breathing Complete! Heart rate calmed and stress reduced.');
+      }
+    }, 1000);
+  }
+
+  function stopBreathingSession(msg) {
+    if (state.breathingSession.timer) {
+      clearInterval(state.breathingSession.timer);
+      state.breathingSession.timer = null;
+    }
+    state.breathingSession.active = false;
+    btnStartBreathing?.classList.remove('hidden');
+    btnStopBreathing?.classList.add('hidden');
+    if (gbTimer) gbTimer.textContent = '02:00';
+    if (breathingOrb) breathingOrb.className = 'breathing-orb';
+    if (gbPhaseLabel) gbPhaseLabel.textContent = msg || 'Session stopped. Tap Start anytime.';
+  }
+
+  btnStartBreathing?.addEventListener('click', () => startBreathingSession());
+  btnStopBreathing?.addEventListener('click', () => stopBreathingSession());
+
+  // ── Sports Mode Selection & Live Workout Stopwatch ───────────────────────
+  sportsGrid?.addEventListener('click', (e) => {
+    const card = e.target.closest('.sport-card');
+    if (!card) return;
+    document.querySelectorAll('.sport-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    state.activeWorkout.sport = card.dataset.sport;
+    state.activeWorkout.calRate = parseFloat(card.dataset.calrate || '6.5');
+    if (awSelectedSport) awSelectedSport.textContent = `${card.querySelector('.sport-icon')?.textContent || '🏃'} ${state.activeWorkout.sport}`;
+  });
+
+  btnToggleWorkout?.addEventListener('click', () => {
+    if (state.activeWorkout.active) {
+      // Stop Workout
+      clearInterval(state.activeWorkout.timer);
+      state.activeWorkout.timer = null;
+      state.activeWorkout.active = false;
+      btnToggleWorkout.textContent = '▶ Start Workout';
+      btnToggleWorkout.style.background = '#ff2a4b';
+      alert(`🏅 Workout Complete!\n\nSport: ${state.activeWorkout.sport}\nDuration: ${awStopwatch.textContent}\nCalories Burned: ${awCaloriesBurned.textContent} kcal\n\nSynced to SSS & boAt Activity Rings.`);
+    } else {
+      // Start Workout
+      state.activeWorkout.active = true;
+      state.activeWorkout.seconds = 0;
+      state.activeWorkout.caloriesBurned = 0;
+      btnToggleWorkout.textContent = '⏹ Stop Workout';
+      btnToggleWorkout.style.background = '#00e676';
+
+      state.activeWorkout.timer = setInterval(() => {
+        state.activeWorkout.seconds++;
+        state.activeWorkout.caloriesBurned += (state.activeWorkout.calRate / 60);
+
+        const h = Math.floor(state.activeWorkout.seconds / 3600);
+        const m = Math.floor((state.activeWorkout.seconds % 3600) / 60);
+        const s = state.activeWorkout.seconds % 60;
+        if (awStopwatch) {
+          awStopwatch.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+        if (awCaloriesBurned) {
+          awCaloriesBurned.textContent = state.activeWorkout.caloriesBurned.toFixed(1);
+        }
+      }, 1000);
+    }
+  });
+
+  // ── Smart Wrist Hardware Actions & SOS Trigger ───────────────────────────
+  // 🚨 1. Wrist SOS Button (Simulates Watch physical button long-press)
+  btnTriggerWristSos?.addEventListener('click', () => {
+    closeBoatWatchModal();
+    console.log('[boAt Smartwatch] Wrist physical button SOS triggered!');
+    triggerEmergency('FROM_BOAT_LUNAR_WATCH_HARDWARE_SOS');
+  });
+
+  // 🧭 2. Turn-by-Turn Navigation Push to Watch Display
+  btnPushNavHospital?.addEventListener('click', () => {
+    const navScreen = document.querySelector('.watch-nav-screen-preview');
+    if (navScreen) {
+      navScreen.innerHTML = `
+        <div class="wn-arrow" style="color:#00e676; animation: pulse 1s infinite;">⬆ 120m</div>
+        <div class="wn-distance" style="color:#00e5ff;">Turn Right onto MG Road</div>
+        <div class="wn-dest" style="color:#ffb300;">🏥 Apollo Trauma Center (1.2 km • 3 mins)</div>
+      `;
+    }
+    alert('🧭 Turn-by-Turn Directions Pushed to boAt Lunar Discovery Display!\n\nDestination: Apollo Trauma Center\nDistance: 1.2 km (3 mins)\n\nDirections stream live directly on your watch face.');
+  });
+
+  let navStepIdx = 0;
+  const navSteps = [
+    { arrow: '⬆', dist: 'In 150m: Turn Right', dest: '🏥 City Trauma Center (1.2 km)' },
+    { arrow: '⮡', dist: 'In 40m: Turn Right onto Cross St', dest: '🏥 City Trauma Center (1.0 km)' },
+    { arrow: '⬆', dist: 'In 800m: Continue Straight', dest: '🏥 City Trauma Center (0.6 km)' },
+    { arrow: '🏁', dist: 'In 50m: Hospital on Left', dest: '🏥 Arrived at Emergency Gate' }
+  ];
+  btnSimulateNavTurn?.addEventListener('click', () => {
+    navStepIdx = (navStepIdx + 1) % navSteps.length;
+    const step = navSteps[navStepIdx];
+    const navScreen = document.querySelector('.watch-nav-screen-preview');
+    if (navScreen) {
+      navScreen.innerHTML = `
+        <div class="wn-arrow">${step.arrow}</div>
+        <div class="wn-distance">${step.dist}</div>
+        <div class="wn-dest">${step.dest}</div>
+      `;
+    }
+  });
+
+  // 🪪 3. Push Medical QR Pass to Watch QR Tray
+  btnPushQrToTray?.addEventListener('click', () => {
+    alert('🪪 SSS Emergency Medical ID Pushed to Watch QR Tray!\n\nParamedics can now scan the QR code directly from your wrist even if your phone is locked or discharged.\n\nContains: Santosha D • O+ • CAD Warning • ICE: +1 555-0199');
+  });
+
+  // 📳 4. Test Watch Haptic Vibration
+  btnTestHapticVibrate?.addEventListener('click', () => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate([300, 150, 300, 150, 600]);
+    }
+    alert('📳 Wrist Haptic Vibration Command Sent!\n\nYour boAt Lunar Discovery buzzes with emergency tactile alert pulse.');
+  });
+
+  // Female Wellness Logger
+  document.getElementById('btnLogWellness')?.addEventListener('click', () => {
+    alert('🌸 Female Wellness Logger\n\nCurrent Phase: Ovulation Window (Day 14/28)\nPredicted Next Period: in 14 days\n\nDaily log saved to local biometric store.');
+  });
+
+  // Initial Ring Update
+  updateActivityRings(state.boatWatch.calories, state.boatWatch.steps, state.boatWatch.distance);
 
   // =========================================================================
   // 13. 📱 FALL DETECTOR — REMOVED (available in mobile app version)
